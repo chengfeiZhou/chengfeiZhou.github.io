@@ -103,7 +103,7 @@ theme: ayer
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  # type: git
-  # repo: git@github.com:chengfeiZhou/chengfeiZhou.github.io.git
-  # branch: main
+  type: git
+  repo: git@github.com:chengfeiZhou/chengfeiZhou.github.io.git
+  branch: gh-pages
 
