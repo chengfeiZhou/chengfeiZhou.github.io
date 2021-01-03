@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2020-12-29T05:33:21.936Z</updated>
+  <updated>2021-01-03T09:39:41.385Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何在github上搭建一个hexo博客</title>
+    <link href="http://example.com/2021/01/01/create-Bolg-site/"/>
+    <id>http://example.com/2021/01/01/create-Bolg-site/</id>
+    <published>2021-01-01T11:42:57.000Z</published>
+    <updated>2021-01-03T09:39:41.385Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;一、为何搭建个人博客&quot;&gt;&lt;a href=&quot;#一、为何搭建个人博客&quot; class=&quot;headerlink&quot; title=&quot;一、为何搭建个人博客:&quot;&gt;&lt;/a&gt;一、为何搭建个人博客:&lt;/h1&gt;&lt;p&gt;&amp;emsp;&amp;emsp;其实我在CSDN有自己的博客,</summary>
+        
+      
+    
+    
+    
+    <category term="服务器" scheme="http://example.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    <category term="Blog" scheme="http://example.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/Blog/"/>
+    
+    
+    <category term="服务器" scheme="http://example.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
