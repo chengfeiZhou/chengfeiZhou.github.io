@@ -15,7 +15,7 @@ categories:
 &emsp;&emsp;默认已经在电脑上安装了[Git](https://git-scm.com/)的客户端;
 
 ## 1. 创建代码仓库:
-![](/source/_posts/create-Bolg-site/createRepository.png)
+![](/images/create-Bolg-site/createRepository.png)
 
 
 
