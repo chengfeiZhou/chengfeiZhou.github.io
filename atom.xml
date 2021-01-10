@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-01-10T13:33:11.126Z</updated>
+  <updated>2021-01-10T13:37:30.039Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,32 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Java学习002之方法</title>
+    <link href="http://example.com/2021/01/10/java_003_Function/"/>
+    <id>http://example.com/2021/01/10/java_003_Function/</id>
+    <published>2021-01-10T13:34:17.000Z</published>
+    <updated>2021-01-10T13:37:30.039Z</updated>
+    
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    <category term="基础班" scheme="http://example.com/categories/Java/%E5%9F%BA%E7%A1%80%E7%8F%AD/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+    <category term="基础班" scheme="http://example.com/tags/%E5%9F%BA%E7%A1%80%E7%8F%AD/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java学习002之运算符</title>
-    <link href="http://example.com/2021/01/10/002-javaOperation/"/>
-    <id>http://example.com/2021/01/10/002-javaOperation/</id>
+    <link href="http://example.com/2021/01/10/java_002_Operation/"/>
+    <id>http://example.com/2021/01/10/java_002_Operation/</id>
     <published>2021-01-10T12:08:45.000Z</published>
-    <updated>2021-01-10T13:33:11.126Z</updated>
+    <updated>2021-01-10T13:36:15.300Z</updated>
     
     
       
@@ -41,14 +62,16 @@
     
     <category term="Java" scheme="http://example.com/tags/Java/"/>
     
+    <category term="基础班" scheme="http://example.com/tags/%E5%9F%BA%E7%A1%80%E7%8F%AD/"/>
+    
   </entry>
   
   <entry>
     <title>Java学习001之绪论</title>
-    <link href="http://example.com/2021/01/10/001_javaInit/"/>
-    <id>http://example.com/2021/01/10/001_javaInit/</id>
+    <link href="http://example.com/2021/01/10/java_001_Init/"/>
+    <id>http://example.com/2021/01/10/java_001_Init/</id>
     <published>2021-01-10T07:58:36.000Z</published>
-    <updated>2021-01-10T13:33:05.114Z</updated>
+    <updated>2021-01-10T13:36:18.137Z</updated>
     
     
       
@@ -68,14 +91,16 @@
     
     <category term="Java" scheme="http://example.com/tags/Java/"/>
     
+    <category term="基础班" scheme="http://example.com/tags/%E5%9F%BA%E7%A1%80%E7%8F%AD/"/>
+    
   </entry>
   
   <entry>
     <title>python标准库01</title>
-    <link href="http://example.com/2021/01/04/001_pythonIndex/"/>
-    <id>http://example.com/2021/01/04/001_pythonIndex/</id>
+    <link href="http://example.com/2021/01/04/python_001_Index/"/>
+    <id>http://example.com/2021/01/04/python_001_Index/</id>
     <published>2021-01-04T08:46:29.000Z</published>
-    <updated>2021-01-10T09:48:00.559Z</updated>
+    <updated>2021-01-10T13:35:35.476Z</updated>
     
     
       
