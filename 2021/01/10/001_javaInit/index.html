@@ -78,7 +78,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.6k</span>
+            <span class="post-count">1.7k</span>
         </span>
     </span>
 
@@ -188,7 +188,14 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> d = <span class="number">1000</span>;</span><br><span class="line"><span class="comment">// 或</span></span><br><span class="line"><span class="keyword">int</span> i = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">double</span> d2 = i;</span><br></pre></td></tr></table></figure>
 <h3 id="6-2-强制类型转换"><a href="#6-2-强制类型转换" class="headerlink" title="6.2 强制类型转换"></a>6.2 强制类型转换</h3><p>表示范围大的数据类型转换成范围小的数据类型, 这种方式称为<em>强制类型转换</em>;</p>
 <p>强制类型转换格式:<br><code>范围小的数据类型  变量 = (范围小的数据类型) 范围大的数据类型值;</code><br>如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>  i = (<span class="keyword">int</span>)<span class="number">6.718</span>;   <span class="comment">//i的值为6</span></span><br><span class="line"><span class="comment">// 或</span></span><br><span class="line"><span class="keyword">double</span>  d = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">int</span>  i2 = (<span class="keyword">int</span>)d;     <span class="comment">//i2的值为3</span></span><br></pre></td></tr></table></figure> 
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>  i = (<span class="keyword">int</span>)<span class="number">6.718</span>;   <span class="comment">//i的值为6</span></span><br><span class="line"><span class="comment">// 或</span></span><br><span class="line"><span class="keyword">double</span>  d = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">int</span>  i2 = (<span class="keyword">int</span>)d;     <span class="comment">//i2的值为3</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意:</strong></p>
+<ul>
+<li>强制类型转换,可能存在<strong>数据溢出(整型)**或</strong>精度损失(浮点)**的情况;</li>
+<li><code>char</code>类型进行数学运算, 那么字符就会按照ASCII翻译成<code>int</code>;<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(`A` + <span class="number">1</span>);    <span class="comment">// 66</span></span><br></pre></td></tr></table></figure></li>
+<li><code>byte, short, char</code>在进行数学运算时都会被提升成<code>int</code>;</li>
+</ul>
+ 
       <!-- reward -->
       
       <div id="reword-out">
