@@ -79,6 +79,7 @@
 <li>jre: java运行时环境, 包含<code>JVM</code>和运行时所需要的<code>核心类库</code>;</li>
 <li>jdk: java的开发工具包, 包含<code>jre</code>和开发所需要的工具;</li>
 </ul>
+<p><img src="/images/javaLearn/001_6_jdk.png"></p>
 <h2 id="3-jdk的下载安装"><a href="#3-jdk的下载安装" class="headerlink" title="3.jdk的下载安装:"></a>3.jdk的下载安装:</h2><p>jdk15:<a href="https://www.oracle.com/java/technologies/javase-jdk15-downloads.html">https://www.oracle.com/java/technologies/javase-jdk15-downloads.html</a><br>jdk8:<a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html">https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html</a><br>其他版本: <a href="https://www.oracle.com/java/technologies/javase-downloads.html">https://www.oracle.com/java/technologies/javase-downloads.html</a></p>
 <h2 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4. 配置环境变量;"></a>4. 配置环境变量;</h2><p><img src="/images/javaLearn/001_1_%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F.png"></p>
 <h1 id="三、HelloWorld入门"><a href="#三、HelloWorld入门" class="headerlink" title="三、HelloWorld入门:"></a>三、HelloWorld入门:</h1><h2 id="1-程序开发步骤说明"><a href="#1-程序开发步骤说明" class="headerlink" title="1. 程序开发步骤说明:"></a>1. 程序开发步骤说明:</h2><p>java程序开发三步骤: <strong>编写、编译、运行</strong><br><img src="/images/javaLearn/001_2_step.png"></p>
@@ -223,9 +224,9 @@
       </tags>
   </entry>
   <entry>
-    <title>Java学习002之方法</title>
+    <title>Java学习003之方法</title>
     <url>/2021/01/10/java_003_Function/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h1 id="一、方法入门："><a href="#一、方法入门：" class="headerlink" title="一、方法入门："></a>一、方法入门：</h1><h2 id="1-方法的定义："><a href="#1-方法的定义：" class="headerlink" title="1. 方法的定义："></a>1. 方法的定义：</h2><h3 id="1-1-定义格式："><a href="#1-1-定义格式：" class="headerlink" title="1.1 定义格式："></a>1.1 定义格式：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">修饰符 返回值类型 方法名(参数列表) &#123;</span><br><span class="line">    功能代码;</span><br><span class="line">    <span class="keyword">return</span> 返回值;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Java</category>
         <category>基础班</category>

@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-01-10T13:37:30.039Z</updated>
+  <updated>2021-01-10T14:08:29.987Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,12 +17,20 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Java学习002之方法</title>
+    <title>Java学习003之方法</title>
     <link href="http://example.com/2021/01/10/java_003_Function/"/>
     <id>http://example.com/2021/01/10/java_003_Function/</id>
     <published>2021-01-10T13:34:17.000Z</published>
-    <updated>2021-01-10T13:37:30.039Z</updated>
+    <updated>2021-01-10T14:08:29.987Z</updated>
     
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;一、方法入门：&quot;&gt;&lt;a href=&quot;#一、方法入门：&quot; class=&quot;headerlink&quot; title=&quot;一、方法入门：&quot;&gt;&lt;/a&gt;一、方法入门：&lt;/h1&gt;&lt;h2 id=&quot;1-方法的定义：&quot;&gt;&lt;a href=&quot;#1-方法的定义：&quot;</summary>
+        
+      
     
     
     
@@ -71,7 +79,7 @@
     <link href="http://example.com/2021/01/10/java_001_Init/"/>
     <id>http://example.com/2021/01/10/java_001_Init/</id>
     <published>2021-01-10T07:58:36.000Z</published>
-    <updated>2021-01-10T13:36:18.137Z</updated>
+    <updated>2021-01-10T14:11:41.567Z</updated>
     
     
       
