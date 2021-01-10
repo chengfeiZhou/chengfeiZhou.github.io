@@ -5,7 +5,7 @@
     <url>/2021/01/01/create-Bolg-site/</url>
     <content><![CDATA[<h1 id="一、为何搭建个人博客"><a href="#一、为何搭建个人博客" class="headerlink" title="一、为何搭建个人博客:"></a>一、为何搭建个人博客:</h1><p>&emsp;&emsp;其实我在CSDN有自己的博客, 随着文章越写越多, 我发现CSDN对分类的数量是有限制的, 后期我想写其他分类的文章的时候, 就不能再创建新的分类了. 也有想过再搞一个微信的公众号, 之前上学那会搞过学院的官方微信公众号, 各种认证和各种敏感词汇搞得很烦, 而且对于一些定制化的接入也比较麻烦. 所以, 想来想去, 还是搞一个内容可以完全由自己掌握的博客. 一来可以当做自己的一个学习笔记, 二来可以分享给需要的朋友, 三来可以作为自己其他服务的入口. 说干就干吧;</p>
 <h1 id="二、创建githu仓库"><a href="#二、创建githu仓库" class="headerlink" title="二、创建githu仓库:"></a>二、创建githu仓库:</h1><p>&emsp;&emsp;关于Git仓库有国内的<a href="https://gitee.com/">Gitee</a>和国外的<a href="https://github.com/">Github</a>都可以选择;<br>&emsp;&emsp;默认已经在电脑上安装了<a href="https://git-scm.com/">Git</a>的客户端;</p>
-<h2 id="1-创建代码仓库"><a href="#1-创建代码仓库" class="headerlink" title="1. 创建代码仓库:"></a>1. 创建代码仓库:</h2><p><img src="/source/_posts/create-Bolg-site/createRepository.png"></p>
+<h2 id="1-创建代码仓库"><a href="#1-创建代码仓库" class="headerlink" title="1. 创建代码仓库:"></a>1. 创建代码仓库:</h2><p><img src="/images/create-Bolg-site/createRepository.png"></p>
 <h1 id="三、Hexo"><a href="#三、Hexo" class="headerlink" title="三、Hexo:"></a>三、Hexo:</h1><p><a href="https://hexo.io/zh-cn/docs/">官方文档</a></p>
 <h1 id="四、编写文章"><a href="#四、编写文章" class="headerlink" title="四、编写文章:"></a>四、编写文章:</h1><h1 id="五、Hexo常用"><a href="#五、Hexo常用" class="headerlink" title="五、Hexo常用:"></a>五、Hexo常用:</h1>]]></content>
       <categories>
@@ -17,8 +17,107 @@
       </tags>
   </entry>
   <entry>
-    <title>python标准库(一)</title>
-    <url>/2021/01/04/pythonIndex/</url>
+    <title>Java学习之绪论</title>
+    <url>/2021/01/10/001_javaInit/</url>
+    <content><![CDATA[<h1 id="一、开发前言"><a href="#一、开发前言" class="headerlink" title="一、开发前言:"></a>一、开发前言:</h1><h2 id="1-java语言概述"><a href="#1-java语言概述" class="headerlink" title="1. java语言概述:"></a>1. java语言概述:</h2><h3 id="1-1-什么是java语言"><a href="#1-1-什么是java语言" class="headerlink" title="1.1 什么是java语言:"></a>1.1 什么是java语言:</h3><p>…</p>
+<h3 id="1-2-java发展史"><a href="#1-2-java发展史" class="headerlink" title="1.2 java发展史:"></a>1.2 java发展史:</h3><p>…</p>
+<h3 id="1-3-java语言能做什么"><a href="#1-3-java语言能做什么" class="headerlink" title="1.3 java语言能做什么:"></a>1.3 java语言能做什么:</h3><p>…</p>
+<h2 id="2-计算机基础知识"><a href="#2-计算机基础知识" class="headerlink" title="2. 计算机基础知识:"></a>2. 计算机基础知识:</h2><h3 id="2-1-二进制"><a href="#2-1-二进制" class="headerlink" title="2.1 二进制:"></a>2.1 二进制:</h3><p>二进制转十进制： ”8421法“;<br>十进制转二进制: “辗转相除法”;</p>
+<h3 id="2-2-存储单元"><a href="#2-2-存储单元" class="headerlink" title="2.2 存储单元:"></a>2.2 存储单元:</h3><p>1 Byte(字节) = 8bit(位,比特)<br>1 KB = 1024 Byte<br>1 MB = 1024 KB<br>1 GB = 1024 MB<br>1 TB = 1024 GB<br>1 PB = 1024 TB<br>1 EB = 1024 PB<br>1 ZB = 1024 EB<br><strong>注:</strong></p>
+<ul>
+<li>进制:<br>1024 = 2^10^</li>
+<li>一般网络带宽:<br>100Mbps =&gt;100Mbps /8 = 12.5MB/s</li>
+</ul>
+<h2 id="3-windows的命令提示符"><a href="#3-windows的命令提示符" class="headerlink" title="3.windows的命令提示符:"></a>3.windows的命令提示符:</h2><p>(我不是第一次使用电脑)</p>
+<h1 id="二、java开发环境搭建"><a href="#二、java开发环境搭建" class="headerlink" title="二、java开发环境搭建:"></a>二、java开发环境搭建:</h1><h2 id="1-java虚拟机-–-JVM"><a href="#1-java虚拟机-–-JVM" class="headerlink" title="1. java虚拟机 – JVM:"></a>1. java虚拟机 – JVM:</h2><ul>
+<li>jvm: java的运行环境;</li>
+<li>跨平台: jvm支持了java的跨平台性; 一次编译,到处运行;</li>
+</ul>
+<h2 id="2-jre-和-jdk"><a href="#2-jre-和-jdk" class="headerlink" title="2. jre 和 jdk:"></a>2. jre 和 jdk:</h2><ul>
+<li>jre: java运行时环境, 包含<code>JVM</code>和运行时所需要的<code>核心类库</code>;</li>
+<li>jdk: java的开发工具包, 包含<code>jre</code>和开发所需要的工具;</li>
+</ul>
+<h2 id="3-jdk的下载安装"><a href="#3-jdk的下载安装" class="headerlink" title="3.jdk的下载安装:"></a>3.jdk的下载安装:</h2><p>jdk15:<a href="https://www.oracle.com/java/technologies/javase-jdk15-downloads.html">https://www.oracle.com/java/technologies/javase-jdk15-downloads.html</a><br>jdk8:<a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html">https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html</a><br>其他版本: <a href="https://www.oracle.com/java/technologies/javase-downloads.html">https://www.oracle.com/java/technologies/javase-downloads.html</a></p>
+<h2 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4. 配置环境变量;"></a>4. 配置环境变量;</h2><p><img src="/images/javaLearn/001_1_%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F.png"></p>
+<h1 id="三、HelloWorld入门"><a href="#三、HelloWorld入门" class="headerlink" title="三、HelloWorld入门:"></a>三、HelloWorld入门:</h1><h2 id="1-程序开发步骤说明"><a href="#1-程序开发步骤说明" class="headerlink" title="1. 程序开发步骤说明:"></a>1. 程序开发步骤说明:</h2><p>java程序开发三步骤: <strong>编写、编译、运行</strong><br><img src="/images/javaLearn/001_2_step.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * HelloWorld</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello world&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译及运行:<br><img src="/images/javaLearn/001_3_runHello.png"><br><strong>每次修改代码后都要重新<code>编译</code></strong></p>
+<h2 id="2-java的注释"><a href="#2-java的注释" class="headerlink" title="2. java的注释:"></a>2. java的注释:</h2><p>Java中提供了三种注释方式，分别是：</p>
+<ul>
+<li>单行注释: <code>//注释内容</code></li>
+<li>多行注释: <code>/*注释内容*/</code></li>
+<li>文档注释: <code>/**注释内容*/</code></li>
+</ul>
+<p>其中, 文档注释与多行注释作用基本相同,唯一的区别是文档注释可以使用<code>javadoc.exe</code>命令生成API文档;</p>
+<h1 id="四、变量："><a href="#四、变量：" class="headerlink" title="四、变量："></a>四、变量：</h1><h2 id="1-关键字"><a href="#1-关键字" class="headerlink" title="1. 关键字:"></a>1. 关键字:</h2><p>　　关键字是被Java语言赋予特殊含义, 具有专门用途的单词, 比如之前接触的<code>class</code>, <code>public</code>, <code>static</code>, <code>void</code>均为Java已经预设好的; 你可以先把Java关键字理解为“命令”!<br>　　Java中关键字<code>均为小写</code>，下面是Java中所有关键字:</p>
+<p><img src="/images/javaLearn/001_4_%E5%85%B3%E9%94%AE%E5%AD%97.png"></p>
+<h2 id="2-标识符"><a href="#2-标识符" class="headerlink" title="2. 标识符:"></a>2. 标识符:</h2><p>在Java程序中, 除了关键字以外基本上都是标识符了;<br>标识符就是名称的意思，所有的名称都统称为标识符; Java中经常要定义类、方法、变量, 在定义他们时总要给它们起名字, 这些名字就是标识符; </p>
+<p>标识符的规范:</p>
+<ul>
+<li>组成元素:<ul>
+<li>英文字符: <code>a-zA-Z</code>;</li>
+<li>数字: <code>0-9</code>;</li>
+<li>符号: <code>_与$</code>;</li>
+</ul>
+</li>
+<li>标识符规则:<ul>
+<li>数字不能开头;</li>
+<li>不可以使用关键字;</li>
+<li>严格区分大小写，不限制长度起名时，尽量达到见名知意;</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-常量"><a href="#3-常量" class="headerlink" title="3. 常量:"></a>3. 常量:</h2><ul>
+<li>字符串常量: 凡是用双引号引起来的部分;</li>
+<li>整型常量: 直接写上的数字, 没有小数;</li>
+<li>字符常量: 使用单引号引起来的单个字符;<strong>单引号内不能没有数据</strong></li>
+<li>布尔常量: 只有两种取值: <code>true</code>, <code>false</code>;</li>
+<li>空常量: <code>null</code>: 表示没有任何数据; <strong>null不能打印输出</strong></li>
+</ul>
+<h2 id="4-数据类型"><a href="#4-数据类型" class="headerlink" title="4. 数据类型:"></a>4. 数据类型:</h2><h3 id="4-1-分类"><a href="#4-1-分类" class="headerlink" title="4.1 分类:"></a>4.1 分类:</h3><ul>
+<li>基本数据类型;</li>
+<li>引用数据类型:<code>字符串、类、接口、Lambda</code>；<h3 id="4-2-基本数据类型："><a href="#4-2-基本数据类型：" class="headerlink" title="4.2 基本数据类型："></a>4.2 基本数据类型：</h3></li>
+</ul>
+<p><strong>四类八种</strong><br><img src="/images/javaLearn/001_5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png"></p>
+<p><strong>注意:</strong></p>
+<ul>
+<li>字符串不是基本数据类型, 而是引用类型;</li>
+<li>浮点型可能只是一个近似值, 并非精确值;</li>
+<li>数据范围与字节数不一定相关,例如: <code>float</code>数据范围比<code>long</code>更加广泛, 但是<code>float</code>是4字节, <code>long</code>是8字节;</li>
+<li>浮点数当中默认是<code>double</code>; 如果一定要使用<code>float</code>, 需要加后缀<code>F</code>(3.1415F);</li>
+<li>整数当中默认是<code>int</code>;如果一定要使用<code>long</code>, 需要加后缀<code>L</code>(123456L);</li>
+</ul>
+<h2 id="5-变量"><a href="#5-变量" class="headerlink" title="5. 变量:"></a>5. 变量:</h2><h3 id="5-1-定义变量-创建变量"><a href="#5-1-定义变量-创建变量" class="headerlink" title="5.1 定义变量(创建变量):"></a>5.1 定义变量(创建变量):</h3><p>定义变量的语法格式：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">数据类型  变量名  =  数据值；</span><br><span class="line"><span class="keyword">int</span>         a    =  <span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+<p>其中<code>int</code>是数据类型, 指定了变量只能存储整数, 而且指定了存储范围为<code>-2147483648～2147483648</code>;<br>其中<code>a</code>表示变量名, 变量名是标识符, 这说明只要是合法的标识符都可以用来做变量名;在程序中可以通过变量名来操作变量(内存中的小盒子);<br>其中<code>=100</code>是给变量赋值, 即向<code>a</code>变量中写入100(变量是个小盒子, 现在小盒子中保存的是100);<br><strong>注意</strong>, 给变量赋的值一定要与类型符合, 也就是说<code>int</code>类型只能存储整数, 而且必须是在<code>-2147483648～2147483648</code>范围内的整数;</p>
+<h3 id="5-2-变量使用的注意事项"><a href="#5-2-变量使用的注意事项" class="headerlink" title="5.2 变量使用的注意事项"></a>5.2 变量使用的注意事项</h3><p>使用变量时, 要满足变量的使用规则才可以使用:</p>
+<ul>
+<li>变量定义后可以不赋值, 使用时再赋值;不赋值不能使用;<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    x = <span class="number">20</span>; <span class="comment">//为x赋值20</span></span><br><span class="line">    System.out.println(x);<span class="comment">//读取x变量中的值，再打印</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>变量使用时有作用域的限制;<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">20</span>;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> y = <span class="number">20</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(x);<span class="comment">//读取x变量中的值，再打印</span></span><br><span class="line">    System.out.println(y);<span class="comment">//读取y变量中的值失败，失败原因，找不到y变量，因为超出了y变量作用范围，所以不能使用y变量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>变量不可以重复定义;<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">double</span> x = <span class="number">5.5</span>;<span class="comment">//编译失败，变量重复定义</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-数据类型转换"><a href="#6-数据类型转换" class="headerlink" title="6. 数据类型转换:"></a>6. 数据类型转换:</h2>不同类型的变量是可以在一起运算的, 但要先进行类型转换再运算;<br>转换的过程中, 数据遵循一个原则:</li>
+<li>范围小的数据类型值*如byte), 可以直接转换为范围大的数据类型值(如int);</li>
+<li>范围大的数据类型值(如int), 不可以直接转换为范围小的数据类型值(如byte);</li>
+</ul>
+<p>将各种数据类型按照数据范围从小到大依次列出：<br><code>byte -&gt; short -&gt; int -&gt; long -&gt; float -&gt; double</code></p>
+<h3 id="6-1-自动类型转换"><a href="#6-1-自动类型转换" class="headerlink" title="6.1 自动类型转换"></a>6.1 自动类型转换</h3><p>表示范围小的数据类型转换成范围大的数据类型, 这种方式称为<em>自动类型转换</em>;</p>
+<p>自动类型转换格式:<br><code>范围大的数据类型 变量 = 范围小的数据类型值;</code><br>如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">double</span> d = <span class="number">1000</span>;</span><br><span class="line"><span class="comment">// 或</span></span><br><span class="line"><span class="keyword">int</span> i = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">double</span> d2 = i;</span><br></pre></td></tr></table></figure>
+<h3 id="6-2-强制类型转换"><a href="#6-2-强制类型转换" class="headerlink" title="6.2 强制类型转换"></a>6.2 强制类型转换</h3><p>表示范围大的数据类型转换成范围小的数据类型, 这种方式称为<em>强制类型转换</em>;</p>
+<p>强制类型转换格式:<br><code>范围小的数据类型  变量 = (范围小的数据类型) 范围大的数据类型值;</code><br>如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span>  i = (<span class="keyword">int</span>)<span class="number">6.718</span>;   <span class="comment">//i的值为6</span></span><br><span class="line"><span class="comment">// 或</span></span><br><span class="line"><span class="keyword">double</span>  d = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">int</span>  i2 = (<span class="keyword">int</span>)d;     <span class="comment">//i2的值为3</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>基础班</category>
+        <category>绪论</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python标准库01</title>
+    <url>/2021/01/04/001_pythonIndex/</url>
     <content><![CDATA[<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述:"></a>一、概述:</h1><p>本项目用来记录学习过程中的代码:<a href="https://github.com/chengfeiZhou/PythonLearn">https://github.com/chengfeiZhou/PythonLearn</a><br>python官方包索引:<a href="https://pypi.org/">https://pypi.org/</a></p>
 <h1 id="二、内置函数"><a href="#二、内置函数" class="headerlink" title="二、内置函数:"></a>二、内置函数:</h1><h2 id="1-abs-x"><a href="#1-abs-x" class="headerlink" title="1. abs(x):"></a>1. abs(x):</h2><p>返回一个数的绝对值. 参数可以是整数、浮点数或任何实现了<a href="https://docs.python.org/zh-cn/3/reference/datamodel.html#object.__abs__"><code>__abs__()</code></a>的对象. 如果参数是一个复数, 则返回它的模</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Num</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, value</span>):</span></span><br><span class="line">        self.value = value</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__abs__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;绝对值&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    a = -<span class="number">1</span></span><br><span class="line">    b = <span class="number">3.14</span></span><br><span class="line">    c = <span class="number">0</span></span><br><span class="line">    d = Num(<span class="number">666</span>)</span><br><span class="line">    print(<span class="string">f&quot;<span class="subst">&#123;a&#125;</span>的绝对值是: <span class="subst">&#123;<span class="built_in">abs</span>(a)&#125;</span>&quot;</span>)   <span class="comment"># -1的绝对值是: 1</span></span><br><span class="line">    print(<span class="string">f&quot;<span class="subst">&#123;b&#125;</span>的绝对值是: <span class="subst">&#123;<span class="built_in">abs</span>(b)&#125;</span>&quot;</span>)   <span class="comment"># 3.14的绝对值是: 3.14</span></span><br><span class="line">    print(<span class="string">f&quot;<span class="subst">&#123;c&#125;</span>的绝对值是: <span class="subst">&#123;<span class="built_in">abs</span>(c)&#125;</span>&quot;</span>)   <span class="comment"># 0的绝对值是: 0</span></span><br><span class="line">    print(<span class="string">f&quot;<span class="subst">&#123;d&#125;</span>的绝对值是: <span class="subst">&#123;<span class="built_in">abs</span>(d)&#125;</span>&quot;</span>)   <span class="comment"># &lt;__main__.Num object at 0x7feaaca58350&gt;的绝对值是: 绝对值</span></span><br></pre></td></tr></table></figure>
@@ -61,19 +160,5 @@
       <tags>
         <tag>python</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2020/12/29/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
 </search>

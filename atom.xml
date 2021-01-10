@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-01-04T11:24:59.905Z</updated>
+  <updated>2021-01-10T09:57:11.306Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,40 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>python标准库(一)</title>
-    <link href="http://example.com/2021/01/04/pythonIndex/"/>
-    <id>http://example.com/2021/01/04/pythonIndex/</id>
+    <title>Java学习之绪论</title>
+    <link href="http://example.com/2021/01/10/001_javaInit/"/>
+    <id>http://example.com/2021/01/10/001_javaInit/</id>
+    <published>2021-01-10T07:58:36.000Z</published>
+    <updated>2021-01-10T09:57:11.306Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;一、开发前言&quot;&gt;&lt;a href=&quot;#一、开发前言&quot; class=&quot;headerlink&quot; title=&quot;一、开发前言:&quot;&gt;&lt;/a&gt;一、开发前言:&lt;/h1&gt;&lt;h2 id=&quot;1-java语言概述&quot;&gt;&lt;a href=&quot;#1-java语言概述&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    <category term="基础班" scheme="http://example.com/categories/Java/%E5%9F%BA%E7%A1%80%E7%8F%AD/"/>
+    
+    <category term="绪论" scheme="http://example.com/categories/Java/%E5%9F%BA%E7%A1%80%E7%8F%AD/%E7%BB%AA%E8%AE%BA/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>python标准库01</title>
+    <link href="http://example.com/2021/01/04/001_pythonIndex/"/>
+    <id>http://example.com/2021/01/04/001_pythonIndex/</id>
     <published>2021-01-04T08:46:29.000Z</published>
-    <updated>2021-01-04T11:24:59.905Z</updated>
+    <updated>2021-01-10T09:48:00.559Z</updated>
     
     
       
@@ -50,7 +79,7 @@
     <link href="http://example.com/2021/01/01/create-Bolg-site/"/>
     <id>http://example.com/2021/01/01/create-Bolg-site/</id>
     <published>2021-01-01T11:42:57.000Z</published>
-    <updated>2021-01-04T08:52:48.699Z</updated>
+    <updated>2021-01-10T08:40:04.805Z</updated>
     
     
       
@@ -69,27 +98,6 @@
     
     
     <category term="服务器" scheme="http://example.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://example.com/2020/12/29/hello-world/"/>
-    <id>http://example.com/2020/12/29/hello-world/</id>
-    <published>2020-12-29T05:33:21.936Z</published>
-    <updated>2020-12-29T05:33:21.936Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt;</summary>
-        
-      
-    
-    
-    
     
   </entry>
   
