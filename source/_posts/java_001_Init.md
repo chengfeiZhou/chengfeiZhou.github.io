@@ -50,6 +50,8 @@ categories:
 - jre: java运行时环境, 包含`JVM`和运行时所需要的`核心类库`;
 - jdk: java的开发工具包, 包含`jre`和开发所需要的工具;
 
+![](/images/javaLearn/001_6_jdk.png)
+
 ## 3.jdk的下载安装:
 jdk15:[https://www.oracle.com/java/technologies/javase-jdk15-downloads.html](https://www.oracle.com/java/technologies/javase-jdk15-downloads.html)
 jdk8:[https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
