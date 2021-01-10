@@ -1,12 +1,11 @@
 ---
-title: Java学习之运算
+title: Java学习之运算符
 date: 2021-01-10 20:08:45
 tags:
     - Java
 categories:
     - Java
     - 基础班
-    - 运算符
 ---
 # 一、算数运算符:
 ## 1. 算数运算符:
