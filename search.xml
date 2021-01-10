@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Java学习之绪论</title>
+    <title>Java学习001之绪论</title>
     <url>/2021/01/10/001_javaInit/</url>
     <content><![CDATA[<h1 id="一、开发前言"><a href="#一、开发前言" class="headerlink" title="一、开发前言:"></a>一、开发前言:</h1><h2 id="1-java语言概述"><a href="#1-java语言概述" class="headerlink" title="1. java语言概述:"></a>1. java语言概述:</h2><h3 id="1-1-什么是java语言"><a href="#1-1-什么是java语言" class="headerlink" title="1.1 什么是java语言:"></a>1.1 什么是java语言:</h3><p>…</p>
 <h3 id="1-2-java发展史"><a href="#1-2-java发展史" class="headerlink" title="1.2 java发展史:"></a>1.2 java发展史:</h3><p>…</p>
@@ -118,7 +118,7 @@
       </tags>
   </entry>
   <entry>
-    <title>Java学习之运算符</title>
+    <title>Java学习002之运算符</title>
     <url>/2021/01/10/002-javaOperation/</url>
     <content><![CDATA[<h1 id="一、算数运算符"><a href="#一、算数运算符" class="headerlink" title="一、算数运算符:"></a>一、算数运算符:</h1><h2 id="1-算数运算符"><a href="#1-算数运算符" class="headerlink" title="1. 算数运算符:"></a>1. 算数运算符:</h2><p>运算符是用来计算数据的符号; 数据可以是常量, 也可以是变量; 被运算符操作的数我们称为<strong>操作数</strong><br>|运算符|运算规则|范例|结果|<br>|-|-|-|-|<br>|+|正号|+3|3|<br>|+|加|2+3|5|<br>|+|连接字符串|“中”+“国”|“中国”|<br>|-|负号|int a=3;-a|-3|<br>|-|减|3-1|2|<br>|<em>|乘|2</em>3|6|<br>|/|除|5/2|2|<br>|%|取模|5/2|1|<br>|++|自增|int a=1;a++/++a|2|<br>|–|自减|int b=3;a–/–a|2|</p>
 <p><strong>注意:</strong></p>
