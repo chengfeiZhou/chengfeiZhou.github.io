@@ -59,6 +59,157 @@
       </tags>
   </entry>
   <entry>
+    <title>Java spring 入门一</title>
+    <url>/2021/01/13/javaSpring-001/</url>
+    <content><![CDATA[<h1 id="一、spring介绍"><a href="#一、spring介绍" class="headerlink" title="一、spring介绍:"></a>一、spring介绍:</h1><h2 id="1-spring是什么"><a href="#1-spring是什么" class="headerlink" title="1. spring是什么:"></a>1. spring是什么:</h2><p>Spring是分层的Java SE/EE应用full-stack轻量级开源框架, 以<code>IoC</code>(反转控制)和<code>AOP</code>(面向切面编程)为内核;<br>提供<strong>展现层SpringMVC</strong>和<strong>持久层Spring JDBC Template</strong>以及<strong>业务层事务管理</strong>等众多的企业级应用技术, 还能整合开源世界众多著名的第三方框架爱和类库;</p>
+<h2 id="2-spring发展"><a href="#2-spring发展" class="headerlink" title="2. spring发展;"></a>2. spring发展;</h2><p>…</p>
+<h2 id="3-spring优势"><a href="#3-spring优势" class="headerlink" title="3.spring优势:"></a>3.spring优势:</h2><ul>
+<li><strong>方便解耦, 简化开发</strong>:通过Spring提供的IoC容器, 可以将对象间的依赖交由Spring进行控制,避免硬编码所造成的的过渡耦合;用户不必再为单例模式类、属性文件解析等底层需求写代码, 而更专注于上层应用;</li>
+<li><strong>AOP编程的支持</strong>: 许多不易用传统OOP实现的功能可以通过AOP轻松实现;</li>
+<li><strong>声明式事务支持</strong>: 通过配置的方式, 解放事务管理代码;</li>
+<li><strong>方便程序测试</strong>:</li>
+<li><strong>方便集成各种优秀的框架</strong>:</li>
+<li><strong>降低了JavaEE API的使用难度</strong>: spring对javaEE进行了薄封装, 使API使用难度降低;</li>
+<li><strong>java源码典范</strong>: spring设计的妙啊;</li>
+</ul>
+<h2 id="4-spring的体系结构"><a href="#4-spring的体系结构" class="headerlink" title="4. spring的体系结构:"></a>4. spring的体系结构:</h2><p><img src="/images/javaSpringLearn/001_SpringFramework.png"></p>
+<h1 id="二、Spring快速入门"><a href="#二、Spring快速入门" class="headerlink" title="二、Spring快速入门:"></a>二、Spring快速入门:</h1><h2 id="1-spring程序开发步骤"><a href="#1-spring程序开发步骤" class="headerlink" title="1. spring程序开发步骤:"></a>1. spring程序开发步骤:</h2><ul>
+<li>导入spring的maven坐标;</li>
+<li>编写DAO(如: userDaolmpl)接口和实现类;</li>
+<li>创建spring核心xml配置文件;</li>
+<li>在xml配置文件中配置userDaolmpl;</li>
+<li>通过spring的API获取Bean实例;</li>
+</ul>
+<h2 id="2-代码演示"><a href="#2-代码演示" class="headerlink" title="2. 代码演示:"></a>2. 代码演示:</h2><ul>
+<li>导入spring:<br><code>/spring/spring_ioc/pom.xml</code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>top.zhouchengfei<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring_ioc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>14<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>14<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.0.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>编写DAO(如: userDaolmpl)接口和实现类:<br><code>spring/spring_ioc/src/main/java/com/itheima/dao/UserDao.java</code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.dao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<code>spring/spring_ioc/src/main/java/com/itheima/dao/impl/UserDao.java</code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.dao.impl;</span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDao</span> <span class="keyword">implements</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;sace running......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>创建spring核心xml配置文件;<br><code>spring/spring_ioc/src/main/resources/applicationContext.xml</code><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- add bean --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.itheima.dao.impl.UserDaoImpl&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>通过spring的API获取Bean实例:<br><code>spring/spring_ioc/src/main/java/com/itheima/demo/UserDaoDemo.java</code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDaoDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 通过spring的API获取Bean实例</span></span><br><span class="line">        ApplicationContext app = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        UserDao userDao = (UserDao) app.getBean(<span class="string">&quot;userDao&quot;</span>);</span><br><span class="line">        userDao.save();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="三、spring配置文件"><a href="#三、spring配置文件" class="headerlink" title="三、spring配置文件:"></a>三、spring配置文件:</h1><code>spring/spring_ioc/src/main/resources/applicationContext.xml</code><h2 id="1-Bean标签"><a href="#1-Bean标签" class="headerlink" title="1. Bean标签:"></a>1. Bean标签:</h2><h3 id="1-1-基本配置"><a href="#1-1-基本配置" class="headerlink" title="1.1 基本配置:"></a>1.1 基本配置:</h3></li>
+<li>id: 唯一标识;</li>
+<li>class: 全限定名; 必须存在”无参构造函数”;<h3 id="1-2-范围配置"><a href="#1-2-范围配置" class="headerlink" title="1.2 范围配置:"></a>1.2 范围配置:</h3>scope: 指对象的作用范围, 取值如下:<table>
+<thead>
+<tr>
+<th>取值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>singleton</strong></td>
+<td>(默认值)单例的</td>
+</tr>
+<tr>
+<td><strong>prototype</strong></td>
+<td>多例的</td>
+</tr>
+<tr>
+<td>request</td>
+<td>Web项目中, Spring创建一个Bean对象, 将对象存入到request域中</td>
+</tr>
+<tr>
+<td>session</td>
+<td>Web项目中, Spring创建一个Bean对象, 将对象存入到session域中</td>
+</tr>
+<tr>
+<td>global session</td>
+<td>Web项目中, 应用在Portlet环境, 如果没有Portlet环境, <code>global session</code>相当于session</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h4 id="使用junit进行测试scope属性"><a href="#使用junit进行测试scope属性" class="headerlink" title="使用junit进行测试scope属性:"></a>使用<code>junit</code>进行测试<code>scope</code>属性:</h4><h5 id="a-singleton与prototype"><a href="#a-singleton与prototype" class="headerlink" title="a. singleton与prototype:"></a>a. <code>singleton</code>与<code>prototype</code>:</h5><ul>
+<li>注册<code>junit</code>:</li>
+</ul>
+<p><code>pring/spring_ioc/src/main/resources/applicationContext.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">...</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>top.zhouchengfei<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring_ioc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">       ...</span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>单元测试代码:<br><code>spring/spring_ioc/src/test/java/com/itheima/test/SpringTest.java</code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.test;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="comment">// 测试scope属性</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext app = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        UserDao userDao1 = (UserDao) app.getBean(<span class="string">&quot;userDao&quot;</span>);</span><br><span class="line">        UserDao userDao2 = (UserDao) app.getBean(<span class="string">&quot;userDao&quot;</span>);</span><br><span class="line">        System.out.println(userDao1);</span><br><span class="line">        System.out.println(userDao2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="b-实例创建时机不同"><a href="#b-实例创建时机不同" class="headerlink" title="b. 实例创建时机不同:"></a>b. 实例创建时机不同:</h5><code>spring/spring_ioc/src/main/java/com/itheima/dao/impl/UserDaoImpl.java</code><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.dao.impl;</span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDaoImpl</span> <span class="keyword">implements</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserDaoImpl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 增加一个无参构造方法</span></span><br><span class="line">        System.out.println(<span class="string">&quot;UserDaoImpl创建......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;sace running......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+测试结果:</li>
+<li>scope=”singleton”:<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">UserDaoImpl创建......</span><br><span class="line">com.itheima.dao.impl.UserDaoImpl@1fe20588</span><br><span class="line">com.itheima.dao.impl.UserDaoImpl@1fe20588</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>注意:</strong><br>对象的创建是在加载配置文件的时就创建了;</p>
+<ul>
+<li>scope=”prototype”:<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">UserDaoImpl创建......</span><br><span class="line">UserDaoImpl创建......</span><br><span class="line">com.itheima.dao.impl.UserDaoImpl@14d3bc22</span><br><span class="line">com.itheima.dao.impl.UserDaoImpl@12d4bf7e</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>注意:</strong><br>对象的创建是在加载配置文件的时没有创建, 而是在<code>getBean</code>的时候创建;</p>
+<h5 id="c-结论"><a href="#c-结论" class="headerlink" title="c.结论:"></a>c.结论:</h5><table>
+<thead>
+<tr>
+<th></th>
+<th>singleton</th>
+<th>prototype</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bean的实例化个数</td>
+<td>1个</td>
+<td>多个</td>
+</tr>
+<tr>
+<td>Bean的实例化时机</td>
+<td>当Spring核心文件被加载时, 实例化配置的Bean示例</td>
+<td>当调用getBean()时实例化Bean</td>
+</tr>
+<tr>
+<td>Bean的生命周期</td>
+<td>1. 对象创建: 当应用加载, 创建容器时, 对象就被创建了;<br/>2. 对象运行: 只要容器在, 对象一直活着;<br/>3. 对象销毁: 当应用卸载, 销毁容器时, 对象就被销毁;</td>
+<td>1. 对象创建: 当时用对象时, 创建新的对象示例;<br/>对象运行: 只要对象在使用, 就一直活着;<br/>3. 对象销毁: 当对象长时间不使用, 被java GC;</td>
+</tr>
+</tbody></table>
+<h3 id="1-3-生命周期配置"><a href="#1-3-生命周期配置" class="headerlink" title="1.3 生命周期配置:"></a>1.3 生命周期配置:</h3><ul>
+<li>init-method: 指定类中的初始化方法;</li>
+<li>destroy-method: 指定类中销毁方法名称;</li>
+</ul>
+<p><code>spring/spring_ioc/src/main/java/com/itheima/dao/impl/UserDaoImpl.java</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.dao.impl;</span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDaoImpl</span> <span class="keyword">implements</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserDaoImpl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;UserDaoImpl创建......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;这是初始化方法...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;这是销毁方法...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;sace running......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>spring/spring_ioc/src/main/resources/applicationContext.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">...</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.itheima.dao.impl.UserDaoImpl&quot;</span> <span class="attr">init-method</span>=<span class="string">&quot;init&quot;</span> <span class="attr">destroy-method</span>=<span class="string">&quot;destroy&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>spring/spring_ioc/src/main/resources/applicationContext.xml</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.test;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="comment">// 测试生命周期</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ClassPathXmlApplicationContext app = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        UserDao userDao1 = (UserDao) app.getBean(<span class="string">&quot;userDao&quot;</span>);</span><br><span class="line">        System.out.println(userDao1);</span><br><span class="line">        app.close(); <span class="comment">// 手动关闭容器;</span></span><br><span class="line">        <span class="comment">// ApplicationContext: 没有关闭方法, 但是其子类ClassPathXmlApplicationContext 有关闭方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>结果:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">信息: ...</span><br><span class="line">信息: ...</span><br><span class="line">UserDaoImpl创建......</span><br><span class="line">这是初始化方法...</span><br><span class="line">com.itheima.dao.impl.UserDaoImpl@61dd025</span><br><span class="line">1月 14, 2021 6:41:51 下午 org.springframework.context.support.AbstractApplicationContext doClose</span><br><span class="line">信息: ...</span><br><span class="line">这是销毁方法...</span><br></pre></td></tr></table></figure>
+<h3 id="1-4-Bean实例化配置"><a href="#1-4-Bean实例化配置" class="headerlink" title="1.4 Bean实例化配置:"></a>1.4 Bean实例化配置:</h3><ul>
+<li><strong>无参构造方法</strong>实例化;</li>
+<li><strong>工厂静态方法</strong>实例化;</li>
+<li><strong>工厂实例方法</strong>实例化; </li>
+</ul>
+<h4 id="a-工厂静态方法"><a href="#a-工厂静态方法" class="headerlink" title="a.工厂静态方法:"></a>a.工厂静态方法:</h4><p><code>spring/spring_ioc/src/main/java/com/itheima/factory/StaticFactory.java</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.factory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.impl.UserDaoImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UserDao <span class="title">getUserDao</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> UserDaoImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>spring/spring_ioc/src/main/resources/applicationContext.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">...</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;bean id=&quot;userDao&quot; class=&quot;com.itheima.dao.impl.UserDaoImpl&quot; init-method=&quot;init&quot; destroy-method=&quot;destroy&quot;&gt;&lt;/bean&gt;--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.itheima.factory.StaticFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getUserDao&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>spring/spring_ioc/src/test/java/com/itheima/test/SpringTest.java</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.test;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="comment">// 测试静态工厂构造</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext app = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        UserDao userDao1 = (UserDao) app.getBean(<span class="string">&quot;userDao&quot;</span>);</span><br><span class="line">        System.out.println(userDao1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">UserDaoImpl创建......</span><br><span class="line">com.itheima.dao.impl.UserDaoImpl@1a04f701</span><br></pre></td></tr></table></figure>
+<h4 id="b-工厂实例方法"><a href="#b-工厂实例方法" class="headerlink" title="b.工厂实例方法:"></a>b.工厂实例方法:</h4><p><code>spring/spring_ioc/src/main/java/com/itheima/factory/DynamicFactory.java</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.factory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.impl.UserDaoImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> UserDao <span class="title">getUserDao</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> UserDaoImpl();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>spring/spring_ioc/src/main/resources/applicationContext.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">...</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;bean id=&quot;userDao&quot; class=&quot;com.itheima.dao.impl.UserDaoImpl&quot; init-method=&quot;init&quot; destroy-method=&quot;destroy&quot;&gt;&lt;/bean&gt;--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--  工厂静态构造    --&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;bean id=&quot;userDao&quot; class=&quot;com.itheima.factory.StaticFactory&quot; factory-method=&quot;getUserDao&quot;&gt;&lt;/bean&gt;--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--  工厂实例构造  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;factory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.itheima.factory.DynamicFactory&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">factory-bean</span>=<span class="string">&quot;factory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getUserDao&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>spring</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java学习003之方法</title>
+    <url>/2021/01/10/java_003_Function/</url>
+    <content><![CDATA[<h1 id="一、方法入门："><a href="#一、方法入门：" class="headerlink" title="一、方法入门："></a>一、方法入门：</h1><h2 id="1-方法的定义："><a href="#1-方法的定义：" class="headerlink" title="1. 方法的定义："></a>1. 方法的定义：</h2><h3 id="1-1-定义格式："><a href="#1-1-定义格式：" class="headerlink" title="1.1 定义格式："></a>1.1 定义格式：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">修饰符 返回值类型 方法名(参数列表) &#123;</span><br><span class="line">    功能代码;</span><br><span class="line">    <span class="keyword">return</span> 返回值;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>基础班</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>基础班</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java学习001之绪论</title>
     <url>/2021/01/10/java_001_Init/</url>
     <content><![CDATA[<h1 id="一、开发前言"><a href="#一、开发前言" class="headerlink" title="一、开发前言:"></a>一、开发前言:</h1><h2 id="1-java语言概述"><a href="#1-java语言概述" class="headerlink" title="1. java语言概述:"></a>1. java语言概述:</h2><h3 id="1-1-什么是java语言"><a href="#1-1-什么是java语言" class="headerlink" title="1.1 什么是java语言:"></a>1.1 什么是java语言:</h3><p>…</p>
@@ -221,19 +372,6 @@
       </categories>
       <tags>
         <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java学习003之方法</title>
-    <url>/2021/01/10/java_003_Function/</url>
-    <content><![CDATA[<h1 id="一、方法入门："><a href="#一、方法入门：" class="headerlink" title="一、方法入门："></a>一、方法入门：</h1><h2 id="1-方法的定义："><a href="#1-方法的定义：" class="headerlink" title="1. 方法的定义："></a>1. 方法的定义：</h2><h3 id="1-1-定义格式："><a href="#1-1-定义格式：" class="headerlink" title="1.1 定义格式："></a>1.1 定义格式：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">修饰符 返回值类型 方法名(参数列表) &#123;</span><br><span class="line">    功能代码;</span><br><span class="line">    <span class="keyword">return</span> 返回值;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Java</category>
-        <category>基础班</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>基础班</tag>
       </tags>
   </entry>
 </search>
