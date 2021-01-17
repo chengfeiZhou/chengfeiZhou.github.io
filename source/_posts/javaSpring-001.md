@@ -375,3 +375,452 @@ public class DynamicFactory {
     <bean id="userDao" factory-bean="factory" factory-method="getUserDao"></bean>
 </beans>
 ```
+
+### 1.5 Bean的依赖注入--对象:
+#### a.一般方式注入:
+方式: 在业务代码中获取dao
+`spring/spring_ioc/src/main/java/com/itheima/service/UserService.java`
+```java
+package com.itheima.service;
+
+public interface UserService {
+    public void save();
+}
+```
+`spring/spring_ioc/src/main/java/com/itheima/service/impl/UserServiceImpl.java`
+```java
+package com.itheima.service.impl;
+
+import com.itheima.dao.UserDao;
+import com.itheima.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserServiceImpl implements UserService {
+    public void save() {
+       // 从容器中获取Dao
+       ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+       UserDao userDao = (UserDao) app.getBean("userDao");
+       userDao.save();
+   }
+}
+```
+`spring/spring_ioc/src/main/resources/applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ...>
+    <!--  依赖注入  -->
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl"></bean>
+</beans>
+```
+`spring/spring_ioc/src/main/java/com/itheima/demo/UserController.java`
+```java
+// 业务代码:
+package com.itheima.demo;
+
+
+import com.itheima.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserController {
+    public static void main(String[] args) {
+        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+        UserService userService = (UserService) app.getBean("userService");
+        userService.save();
+    }
+}
+```
+结果:
+```shell
+信息: ...
+信息: ...
+UserDaoImpl创建......
+信息: ...
+信息: ...
+UserDaoImpl创建......
+sace running......
+```
+
+#### b.依赖注入分析:
+- 依赖注入: 它是spring框架核心IOC的具体实现;
+- 在编写程序时,通过控制反转, 把对象创建交给spring, 但是代码中不可能出现没有依赖的情况;
+- IOC解耦只是降低了他们的依赖关系, 但不会消除; 例如: 业务层仍会调用持久层的方法;
+- 这种业务层和持久层的依赖关系, 在使用spring之后, 就让spring类维护了;
+- 简单的说, 就是坐等框架把持久层对象传入业务层, 而不用自己来获取;
+
+#### c.依赖注入的方式:
+- **构造方法**;
+- **set方法**;
+
+#### d.使用set方法注入:
+`spring/spring_ioc/src/main/java/com/itheima/service/UserService.java`
+```java
+package com.itheima.service;
+
+public interface UserService {
+    public void save();
+}
+```
+`spring/spring_ioc/src/main/java/com/itheima/service/impl/UserServiceImpl.java`
+```java
+package com.itheima.service.impl;
+
+import com.itheima.dao.UserDao;
+import com.itheima.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserServiceImpl implements UserService {
+    private UserDao userDao;
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+    public void save() {
+        this.userDao.save();
+    }
+
+    //    public void save() {
+//        // 从容器中获取Dao
+//        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+//        UserDao userDao = (UserDao) app.getBean("userDao");
+//        userDao.save();
+//    }
+}
+```
+`spring/spring_ioc/src/main/resources/applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ...>
+    <!--  依赖注入: set方法  -->
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl">
+        <!-- 对象的引用用`ref`; 把"容器"内部的"userDao",通过"userService"的"setUserDao"方法注入给"userService"          -->
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+</beans>
+```
+`spring/spring_ioc/src/main/java/com/itheima/demo/UserController.java`
+```java
+// 业务代码:
+package com.itheima.demo;
+
+import com.itheima.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserController {
+    public static void main(String[] args) {
+        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+        UserService userService = (UserService) app.getBean("userService");
+        userService.save();
+    }
+}
+```
+结果:
+```shell
+UserDaoImpl创建......
+sace running......
+```
+
+如果业务代码**直接实例化**`UserDaoImpl`
+`spring/spring_ioc/src/main/java/com/itheima/demo/UserController.java`
+```java
+package com.itheima.demo;
+
+
+import com.itheima.service.UserService;
+import com.itheima.service.impl.UserServiceImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserController {
+    public static void main(String[] args) {
+//        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+//        UserService userService = (UserService) app.getBean("userService");
+//        userService.save();
+        UserService userService = new UserServiceImpl();
+        userService.save();
+    }
+}
+
+```
+```shell
+Exception in thread "main" java.lang.NullPointerException
+	at com.itheima.service.impl.UserServiceImpl.save(UserServiceImpl.java:15)
+	at com.itheima.demo.UserController.main(UserController.java:15)
+
+Process finished with exit code 1
+```
+提示空指针异常, 原因是:
+`userService`不是从spring容器中获取的, 没有执行`setUserDao`
+
+#### e.set方法注入 -- p命名空间注入:
+p命名空间注入本质也是set方法注入, 但比起上述的set方法注入更加方便, 主要体现在配置文件中, 如下:
+- 需要引入P命名空间:
+```xml
+xmlns:p="http://www.springframework.org/schema/p"
+```
+- 需要修改注入方式:
+```xml
+<!-- 使用属性的方式: userDao-ref => 注入对象 -->
+ <bean id="userService" class="com.itheima.service.impl.UserServiceImpl" p:userDao-ref="userDao"></bean>
+```
+
+#### f. 有参构造注入:
+`spring/spring_ioc/src/main/java/com/itheima/service/impl/UserServiceImpl.java`
+```java
+package com.itheima.service.impl;
+
+import com.itheima.dao.UserDao;
+import com.itheima.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserServiceImpl implements UserService {
+    private UserDao userDao;
+
+    //    定义有参构造
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
+    //    (必须)定义无参构造
+    public UserServiceImpl() {
+    }
+
+    public void save() {
+        this.userDao.save();
+    }
+}
+```
+`spring/spring_ioc/src/main/resources/applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ...>
+    <!--  构造方法:依赖注入  -->
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl">
+         <!-- name: 有参构造参数名; ref: 容器中的id       -->
+        <constructor-arg name="userDao" ref="userDao"></constructor-arg>
+    </bean>
+</beans>
+```
+### 1.6 Bean的依赖注入--其他数据类型:
+除了对象的引用注入,**普通数据类型, 集合**等都可以在容器中进行注入;
+注入数据三种数据类型:
+- 引用数据注入: (上一节提到)
+- 普通数据类型:
+- 集合数据类型:
+
+#### a.普通数据类型注入:
+`spring/spring_ioc/src/main/java/com/itheima/dao/impl/UserDaoImpl.java`
+```java
+package com.itheima.dao.impl;
+import com.itheima.dao.UserDao;
+
+public class UserDaoImpl implements UserDao {
+    private String username;
+    private int age;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public UserDaoImpl() {
+        System.out.println("UserDaoImpl创建......");
+    }
+
+    public void save() {
+        System.out.println(username + "===============" + age);
+        System.out.println("save running......");
+    }
+}
+
+```
+`spring/spring_ioc/src/main/resources/applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ...>
+    <!--  普通数据类型注入  -->
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl">
+        <property name="username" value="zhangsan"></property>
+        <property name="age" value="18"></property>
+    </bean>
+</beans>
+```
+
+业务代码:
+`spring/spring_ioc/src/main/java/com/itheima/demo/UserDaoDemo.java`
+```java
+package com.itheima.demo;
+
+import com.itheima.dao.UserDao;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserDaoDemo {
+    public static void main(String[] args) {
+        // 通过spring的API获取Bean实例
+        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+        UserDao userDao = (UserDao) app.getBean("userDao");
+        userDao.save();
+    }
+}
+```
+结果:
+```shell
+UserDaoImpl创建......
+zhangsan===============18
+save running......
+```
+
+
+#### b.集合类型注入:
+创建一个类,供后边引用:
+`spring/spring_ioc/src/main/java/com/itheima/domain/User.java`
+```java
+package com.itheima.domain;
+
+public class User {
+    private String nama;
+    private String addr;
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "nama='" + nama + '\'' +
+                ", addr='" + addr + '\'' +
+                '}';
+    }
+}
+```
+集合数据类型注入:
+`spring/spring_ioc/src/main/java/com/itheima/dao/impl/UserDaoImpl.java`
+```java
+package com.itheima.dao.impl;
+import com.itheima.dao.UserDao;
+import com.itheima.domain.User;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+public class UserDaoImpl implements UserDao {
+    //    集合数据类型注入
+    private List<String> strList;
+    private Map<String, User> userMap;
+    private Properties properties;
+
+    public void setStrList(List<String> strList) {
+        this.strList = strList;
+    }
+
+    public void setUserMap(Map<String, User> userMap) {
+        this.userMap = userMap;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+    public UserDaoImpl() {
+        System.out.println("UserDaoImpl创建......");
+    }
+
+    public void save() {
+        System.out.println(strList);
+        System.out.println(userMap);
+        System.out.println(properties);
+        System.out.println("save running......");
+    }
+}
+```
+配置文件,配置集合注入:
+`spring/spring_ioc/src/main/resources/applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ...>
+
+    <!--  集合数据类型注入  -->
+    <bean id="user1" class="com.itheima.domain.User">
+        <property name="nama" value="张三"></property>
+        <property name="addr" value="北京"></property>
+    </bean>
+    <bean id="user2" class="com.itheima.domain.User">
+        <property name="nama" value="李四"></property>
+        <property name="addr" value="上海"></property>
+    </bean>
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl">
+        <property name="strList">
+            <list>
+                <value>aaaaa</value>
+                <value>bbbbb</value>
+                <value>ccccc</value>
+                <value>ddddd</value>
+            </list>
+        </property>
+        <property name="userMap">
+            <map>
+            <!-- ref: 注入容器中的实例 -->
+                <entry key="user1" value-ref="user1"></entry>
+                <entry key="user2" value-ref="user2"></entry>
+            </map>
+        </property>
+        <property name="properties">
+            <props>
+                <prop key="p1">ppp1</prop>
+                <prop key="p2">ppp2</prop>
+                <prop key="p3">ppp3</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
+```
+业务代码:
+`spring/spring_ioc/src/main/java/com/itheima/demo/UserDaoDemo.java`
+```java
+package com.itheima.demo;
+
+import com.itheima.dao.UserDao;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class UserDaoDemo {
+    public static void main(String[] args) {
+        // 通过spring的API获取Bean实例
+        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+        UserDao userDao = (UserDao) app.getBean("userDao");
+        userDao.save();
+    }
+}
+```
+结果:
+```shell
+UserDaoImpl创建......
+[aaaaa, bbbbb, ccccc, ddddd]
+{user1=User{nama='张三', addr='北京'}, user2=User{nama='李四', addr='上海'}}
+{p1=ppp1, p2=ppp2, p3=ppp3}
+save running......
+
+```
