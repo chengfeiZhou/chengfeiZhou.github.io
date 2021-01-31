@@ -8,7 +8,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkouy
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           persist-credentials: false
