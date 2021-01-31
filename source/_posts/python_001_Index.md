@@ -352,3 +352,265 @@ if __name__ == "__main__":
     t4 = complex(Test4())   # 实例化test4
     print(t4)   # (3+4j)
 ```
+
+## 13.delattr(object, name): 删除object的属性;
+`setattr()`相关的函数;实参是一个对象和一个字符串;该字符串必须是对象的某个属性;如果对象允许, 该函数将删除指定的属性;
+例如 `delattr(x, 'foobar')` 等价于`del x.foobar`
+```python
+# coding=utf-8
+class Test(object):
+    def __init__(self, name, age, addr):
+        self.name = name
+        self.age = age
+        self.addr = addr
+    
+    def __str__(self):
+        return f"name: {self.name}, age: {self.age}, addr: {self.addr}"
+
+
+if __name__ == "__main__":
+    tt = Test("zhangsan", 18, "北京")
+    print(f"source: {tt}")  # source: name: zhangsan, age: 18, addr: 北京
+    delattr(tt, "addr")  # delattr(tt, 'addr') 等价于 del tt.addr
+    print(tt.name)  # 张三
+    print(tt.age)   # 18
+    print(tt.addr)  # AttributeError: 'Test' object has no attribute 'addr'
+```
+
+## 14. class dict(): 字典对象
+`class dict(**kwarg)`;
+`class dict(mapping, **kwarg)`;
+`class dict(iterable, **kwarg)`;
+创建一个新的字典; dict 对象是一个字典类;
+
+## 15. dir([object]): 返回调用列表:
+- 如果没有实参，则返回当前本地作用域中的名称列表;
+- 如果有实参，它会尝试返回该对象的有效属性列表;
+
+如果对象有一个名为 `__dir__()` 的方法, 那么该方法将被调用, 并且必须返回一个属性列表; 这允许实现自定义 `__getattr__()` 或 `__getattribute__()` 函数的对象能够自定义 `dir()` 来报告它们的属性。
+
+如果对象不提供 `__dir__()`, 这个函数会尝试从对象已定义的 `__dict__` 属性和类型对象收集信息; 结果列表并不总是完整的, 如果对象有自定义 `__getattr__()`，那结果可能不准确;
+
+默认的 `dir()` 机制对不同类型的对象行为不同, 它会试图返回最相关而不是最全的信息:
+- 如果对象是模块对象, 则列表包含模块的属性名称;
+- 如果对象是类型或类对象, 则列表包含它们的属性名称, 并且递归查找所有基类的属性; 
+- 否则, 列表包含对象的属性名称, 它的类属性名称, 并且递归查找它的类的所有基类的属性;
+
+返回的列表按字母表排序:
+```python
+# coding=utf-8
+import struct
+
+
+class Shape(object):
+    def __dir__(self):
+        return ['area', 'perimeter', 'location']
+
+
+if __name__ == "__main__":
+    print(dir())  # 打印当前本地作用域中的名称列表
+    """
+    ['Shape', '__annotations__', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'struct']
+    """
+    print(dir(struct))  # 打印struct模块的名称列表
+    """
+    ['Struct', '__all__', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', '_clearcache', 'calcsize', 'error', 'iter_unpack', 'pack', 'pack_into', 'unpack', 'unpack_from']
+    """
+    ss = Shape()
+    print(dir(ss))
+    """
+    ['area', 'location', 'perimeter']
+    """
+```
+> 因为 `dir()` 主要是为了便于在交互式时使用, 所以它会试图返回人们感兴趣的名字集合, 而不是试图保证结果的严格性或一致性, 它具体的行为也可能在不同版本之间改变; 例如, 当实参是一个类时, `metaclass` 的属性不包含在结果列表中;
+
+## 16. divmod(a,b): 返回商和余数:
+将两个(非复数)数字作为实参, 并在执行整数除法时返回一对"商"和"余数"; 
+- 对于混合操作数类型, 适用双目算术运算符的规则; 
+- 对于整数，结果和 `(a // b, a % b)` 一致;
+- 对于浮点数，结果是 `(q, a % b)` , `q` 通常是 `math.floor(a / b)` 但可能会比 1 小; 
+    - 在任何情况下, `q * b + a % b` 和 `a` 基本相等; 
+    - 如果 `a % b` 非零, 它的符号和 `b` 一样，并且 `0 <= abs(a % b) < abs(b)`;
+
+```python
+# coding=utf-8
+
+if __name__ == "__main__":
+    print(divmod(5, 2))  # (2, 1)
+    print(divmod(3.3, 2.2))  # (1.0, 1.0999999999999996)
+```
+## 17. enumerate(iterable, start=0): 返回一个枚举对象
+`通常用于for循环`
+- `iterable` 必须是一个序列, 或`iterator`, 或其他支持迭代的对象;
+- `enumerate()` 返回的迭代器的 `__next__()` 方法返回一个元组, 里面包含一个计数值(从 `start` 开始，默认为 0)和通过迭代 `iterable` 获得的值;
+
+```python
+# coding=utf-8
+
+if __name__ == "__main__":
+    seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+    print(list(enumerate(seasons)))  # [(0, 'Spring'), (1, 'Summer'), (2, 'Fall'), (3, 'Winter')]
+    print(list(enumerate(seasons, start=1)))  # [(1, 'Spring'), (2, 'Summer'), (3, 'Fall'), (4, 'Winter')]
+```
+
+## 18. eval & exec:
+### 18.1 eval(expression[, globals[, locals]]): 返回表达式结果
+- `expression`实参是一个字符串;
+- 可选的`globals`实参必须是一个字典;
+- 可选的`locals`可以是任何映射对象;
+
+`expression` 参数会作为一个 Python 表达式(从技术上说是一个条件列表)被解析并求值, 并使用 `globals` 和 `locals` 字典作为全局和局部命名空间;
+如果`globals` 字典存在且不包含以 `__builtins__` 为键的值, 则会在解析 `expression` 之前插入以此为键的对内置模块 `builtins` 的引用; 这意味着 `expression` 通常具有对标准 `builtins` 模块的完全访问权限且受限的环境会被传播;
+如果省略 `locals` 字典则其默认值为 `globals` 字典;
+如果两个字典同时省略, 则表达式执行时会使用 `eval()` 被调用的环境中的 `globals` 和 `locals`;
+> 请注意, `eval(`) 并没有对外围环境下的 (非局部)嵌套作用域 的访问权限;
+### 18.2 exec(object[, globals[, locals]]): 动态执行 Python 代码;
+- `object` 必须是字符串或者代码对象;
+    - 如果是字符串, 那么该字符串将被解析为一系列 Python 语句并执行(除非发生语法错误);
+    - 如果是代码对象, 它将被直接执行; 
+    - 在任何情况下，被执行的代码都需要和文件输入一样是有效的;
+
+> 请注意即使在传递给 `exec()` 函数的代码的上下文中, `return` 和 `yield` 语句也不能在函数定义之外使用; 该函数返回值是 `None`
+
+
+## 19. filter(function, iterable): 列表过滤
+用 `iterable` 中函数 `function` 返回"真"的那些元素, 构建一个新的迭代器;
+- `iterable` 可以是一个序列, 一个支持迭代的容器, 或一个迭代器; 如果 `function` 是 `None` , 则会假设它是一个身份函数,即 `iterable` 中所有返回假的元素会被移除;
+> 请注意, `filter(function, iterable)` 相当于一个生成器表达式, 当 `function` 不是 `None` 的时候为 `(item for item in iterable if function(item))`; `function` 是 `None` 的时候为 `(item for item in iterable if item)`
+
+```python
+# coding-utf-8
+def func(x):
+    return x % 2 == 0
+
+
+if __name__ == "__main__":
+    ll = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    tl = filter(func, ll)
+    print(ll, list(tl))  # [0, 1, 2, 3, 4, 5, 6, 7, 8] [0, 2, 4, 6, 8]
+```
+> 请参阅 [`itertools.filterfalse()`](https://docs.python.org/zh-cn/3/library/itertools.html#itertools.filterfalse) 了解, 只有 `function` 返回 `false` 时才选取 `iterable` 中元素的补充函数
+
+## 20. class float([x]): 返回从数字或字符串 x 生成的浮点数
+- 如果实参是字符串, 则它必须是包含十进制数字的字符串, 字符串前面可以有符号, 之前也可以有空格;
+- 可选的符号有 '+' 和 '-'; '+' 对创建的值没有影响;
+- 实参也可以是 `NaN(非数字)`、正负无穷大的字符串;
+- 除去首尾的空格后，输入必须遵循以下语法：
+
+|说明|表示|符号|
+|-|-|-|
+|sign|签名(符号)|`"+" | "-"`|
+|infinity|无穷|`"Infinity" | "inf"`
+|nan|非数字|"nan"|
+|numeric_value|数值|`floatnumber | infinity | nan`|
+|numeric_string|数值字符串|[sign] numeric_value|
+```python
+# coding=utf-8
+
+if __name__ == "__main__":
+    print(float(21))  # 21.0
+    print(float("25"))  # 25.0
+    print(float("nan"))  # nan
+    print(float("-29"))  # -29.0
+    print(float("inf"))  # inf
+    print(float('+1E6'))  # 1000000.0
+```
+
+## 21. format(value[, format_spec]): 格式化字符串
+将 `value` 转换为 `format_spec` 控制的“格式化”表示;
+`format_spec` 的解释取决于 `value` 实参的类型, 但是大多数内置类型使用标准格式化语法: [格式规格迷你语言](https://docs.python.org/zh-cn/3/library/string.html#formatspec)
+
+## 22. class frozenset([iterable]): 返回一个新的 frozenset 对象
+它包含可选参数 `iterable` 中的元素;
+`frozenset` 是一个内置的类;
+[具体文档](https://docs.python.org/zh-cn/3/library/stdtypes.html#types-set)
+
+## 23. getattr(object, name[, default]): 返回对象命名属性的值
+`name` 必须是字符串; 如果该字符串是对象的属性之一, 则返回该属性的值. 
+例如, `getattr(x, 'foobar')` 等同于 `x.foobar`
+如果指定的属性不存在, 且提供了 `default` 值, 则返回`default` 值, 否则触发 `AttributeError`;
+
+## 24. globals(): 返回表示当前全局符号表的字典
+这总是当前模块的字典(在函数或方法中, 不是调用它的模块, 而是定义它的模块)
+```python
+# coding=utf-8
+class Test(object):
+    def __init__(self):
+        self.name = "zhangsan"
+
+    def run(self):
+        print("runing")
+
+
+if __name__ == "__main__":
+    print(globals())
+    """
+    {'__name__': '__main__', '__doc__': None, '__package__': None, '__loader__': <_frozen_importlib_external.SourceFileLoader object at 0x7f9e5edb6fd0>, '__spec__': None, '__annotations__': {}, '__builtins__': <module 'builtins' (built-in)>, '__file__': '24_globals.py', '__cached__': None, 'Test': <class '__main__.Test'>}
+    """
+```
+
+## 25.hasattr(object, name): 判断name是object的属性
+该实参是一个对象和一个字符串; 
+如果字符串是对象的属性之一的名称, 则返回 True, 否则返回 False; (此功能是通过调用 `getattr(object, name)` 看是否有 `AttributeError` 异常来实现的)
+
+
+## 26.hash(object): 返回该对象的哈希值
+返回该对象的哈希值(如果它有的话); 哈希值是整数; 它们在字典查找元素时用来快速比较字典的键; 相同大小的数字变量有相同的哈希值(即使它们类型不同, 如 1 和 1.0)
+> 注解 如果对象实现了自己的 `__hash__()` 方法, 请注意, `hash()` 根据机器的字长来截断返回;
+
+## 27. help([object]): 启动内置的帮助系统(此函数主要在交互式中使用)
+如果没有实参, 解释器控制台里会启动交互式帮助系统; 
+如果实参是一个字符串, 则在模块、函数、类、方法、关键字或文档主题中搜索该字符串，并在控制台上打印帮助信息;
+如果实参是其他任意对象, 则会生成该对象的帮助页;
+
+## 28. hex(x): 将整数十六进制字符串
+将整数转换为以“0x”为前缀的小写十六进制字符串;
+如果 `x` 不是 Python `int` 对象, 则必须定义返回整数的 `__index__()` 方法;
+```python
+hex(255)
+'0xff'
+hex(-42)
+'-0x2a'
+```
+如果要将整数转换为大写或小写的十六进制字符串, 并可选择有无“0x”前缀, 则可以使用如下方法:
+```python
+'%#x' % 255, '%x' % 255, '%X' % 255
+('0xff', 'ff', 'FF')
+format(255, '#x'), format(255, 'x'), format(255, 'X')
+('0xff', 'ff', 'FF')
+f'{255:#x}', f'{255:x}', f'{255:X}'
+('0xff', 'ff', 'FF')
+```
+
+## 29. id(object):返回对象的“标识值”
+该值是一个整数, 在此对象的生命周期中保证是唯一且恒定的; 两个生命期不重叠的对象可能具有相同的 `id()` 值
+```python
+id(123)
+# 4487555232
+```
+
+## 30. input([prompt]): 写入标准输出
+如果存在 `prompt` 实参, 则将其写入标准输出, 末尾不带换行符; 接下来, 该函数从输入中读取一行，将其转换为字符串(除了末尾的换行符)并返回; 当读取到 EOF 时, 则触发 EOFError;
+```python
+>>> s = input('--> ')  
+--> Monty Python's Flying Circus
+>>> s  
+"Monty Python's Flying Circus"
+```
+> 如果加载了`readline` 模块, `input()` 将使用它来提供复杂的行编辑和历史记录功能
+
+## 31. class int: 返回一个整数对象
+- `class int([x])`
+- `class int(x, base=10)`
+
+返回一个基于数字或字符串 x 构造的整数对象, 或者在未给出参数时返回 0; 
+如果 x 定义了 `__int__()`, `int(x)` 将返回`x.__int__()`; 
+如果 x 定义了 `__index__()`, 它将返回 `x.__index__()`;
+如果 x 定义了 `__trunc__()`, 它将返回 `x.__trunc__()`; 
+对于浮点数, 它将向零舍入;
+
+如果 x 不是数字, 或者有 `base` 参数, x 必须是"字符串、bytes、表示进制为 base 的 整数字面值 的 bytearray 实例";
+该文字前可以有 + 或 - (中间不能有空格), 前后可以有空格; 
+一个进制为 n 的数字包含 0 到 `n-1` 的数, 其中 a 到 z(或 A 到 Z )表示 10 到 35; 
+默认的 base 为 10, 允许的进制有 0、2-36; 2、8、16 进制的数字可以在代码中用 0b/0B 、 0o/0O 、 0x/0X 前缀来表示;
+进制为 0 将安照代码的字面量来精确解释, 最后的结果会是 2、8、10、16 进制中的一个; 所以 int('010', 0) 是非法的，但 int('010') 和 int('010', 8) 是合法的;
