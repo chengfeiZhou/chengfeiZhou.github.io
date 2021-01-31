@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-01-17T08:50:22.095Z</updated>
+  <updated>2021-01-31T10:32:27.584Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,40 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Java spring 入门二</title>
+    <link href="http://example.com/2021/01/31/javaSpring-002/"/>
+    <id>http://example.com/2021/01/31/javaSpring-002/</id>
+    <published>2021-01-31T10:31:46.000Z</published>
+    <updated>2021-01-31T10:32:27.584Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;&quot;&gt;&lt;a href=&quot;#&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    <category term="spring" scheme="http://example.com/categories/Java/spring/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java spring 入门一</title>
     <link href="http://example.com/2021/01/13/javaSpring-001/"/>
     <id>http://example.com/2021/01/13/javaSpring-001/</id>
     <published>2021-01-13T07:54:23.000Z</published>
-    <updated>2021-01-17T08:50:22.095Z</updated>
+    <updated>2021-01-31T10:47:45.331Z</updated>
     
     
       

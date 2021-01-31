@@ -17,6 +17,19 @@
       </tags>
   </entry>
   <entry>
+    <title>Java spring 入门二</title>
+    <url>/2021/01/31/javaSpring-002/</url>
+    <content><![CDATA[<h1 id=""><a href="#" class="headerlink" title=""></a></h1>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>spring</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java学习001之绪论</title>
     <url>/2021/01/10/java_001_Init/</url>
     <content><![CDATA[<h1 id="一、开发前言"><a href="#一、开发前言" class="headerlink" title="一、开发前言:"></a>一、开发前言:</h1><h2 id="1-java语言概述"><a href="#1-java语言概述" class="headerlink" title="1. java语言概述:"></a>1. java语言概述:</h2><h3 id="1-1-什么是java语言"><a href="#1-1-什么是java语言" class="headerlink" title="1.1 什么是java语言:"></a>1.1 什么是java语言:</h3><p>…</p>
@@ -383,7 +396,31 @@
 <p>业务代码:<br><code>spring/spring_ioc/src/main/java/com/itheima/demo/UserDaoDemo.java</code></p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.itheima.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.itheima.dao.UserDao;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDaoDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 通过spring的API获取Bean实例</span></span><br><span class="line">        ApplicationContext app = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        UserDao userDao = (UserDao) app.getBean(<span class="string">&quot;userDao&quot;</span>);</span><br><span class="line">        userDao.save();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>结果:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">UserDaoImpl创建......</span><br><span class="line">[aaaaa, bbbbb, ccccc, ddddd]</span><br><span class="line">&#123;user1=User&#123;nama=&#x27;张三&#x27;, addr=&#x27;北京&#x27;&#125;, user2=User&#123;nama=&#x27;李四&#x27;, addr=&#x27;上海&#x27;&#125;&#125;</span><br><span class="line">&#123;p1=ppp1, p2=ppp2, p3=ppp3&#125;</span><br><span class="line">save running......</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">UserDaoImpl创建......</span><br><span class="line">[aaaaa, bbbbb, ccccc, ddddd]</span><br><span class="line">&#123;user1=User&#123;nama=&#x27;张三&#x27;, addr=&#x27;北京&#x27;&#125;, user2=User&#123;nama=&#x27;李四&#x27;, addr=&#x27;上海&#x27;&#125;&#125;</span><br><span class="line">&#123;p1=ppp1, p2=ppp2, p3=ppp3&#125;</span><br><span class="line">save running......</span><br></pre></td></tr></table></figure>
+<h2 id="2-引入其他配置文件-分模块开发"><a href="#2-引入其他配置文件-分模块开发" class="headerlink" title="2. 引入其他配置文件(分模块开发)"></a>2. 引入其他配置文件(分模块开发)</h2><p>在实际开发中, Spring的配置内容非常多, 这就导致Spring配置很繁杂且体积很大, 所以, 可以将配置拆解到其他配置文件中, 而在Spring主配置文件中通过import标签进行加载:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">import</span> <span class="attr">resource</span>=<span class="string">&quot;applicationContext-xxx.xml&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结:"></a>3. 总结:</h2><p>Spring的重点配置:</p>
+<ul>
+<li><code>&lt;bean&gt;</code>标签:<ul>
+<li>id属性: 在容器中Bean示例的唯一标识, 不允许重复;</li>
+<li>class属性: 要实例化的Bean的全限定名;</li>
+<li>scope属性: Bean的作用范围, 常用是<code>singleton</code>(默认)和<code>prototype</code>;</li>
+<li><code>&lt;property&gt;</code>标签: 属性注入:<ul>
+<li>name属性: 属性名称;</li>
+<li>value属性: 注入普通属性值;</li>
+<li>ref属性: 注入的对象引用</li>
+<li><code>&lt;list&gt;</code>标签</li>
+<li><code>&lt;map&gt;</code>标签</li>
+<li><code>&lt;properties&gt;</code>标签</li>
+<li>…</li>
+</ul>
+</li>
+<li><code>&lt;constructor-arg&gt;</code> 标签</li>
+</ul>
+</li>
+<li><code>&lt;import&gt;</code>标签: 导入其他Spring配置分文件</li>
+</ul>
+]]></content>
       <categories>
         <category>Java</category>
         <category>spring</category>
