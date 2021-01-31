@@ -822,5 +822,27 @@ UserDaoImpl创建......
 {user1=User{nama='张三', addr='北京'}, user2=User{nama='李四', addr='上海'}}
 {p1=ppp1, p2=ppp2, p3=ppp3}
 save running......
-
 ```
+
+## 2. 引入其他配置文件(分模块开发)
+在实际开发中, Spring的配置内容非常多, 这就导致Spring配置很繁杂且体积很大, 所以, 可以将配置拆解到其他配置文件中, 而在Spring主配置文件中通过import标签进行加载:
+```xml
+<import resource="applicationContext-xxx.xml"/>
+```
+
+## 3. 总结:
+Spring的重点配置:
+- `<bean>`标签:
+    - id属性: 在容器中Bean示例的唯一标识, 不允许重复;
+    - class属性: 要实例化的Bean的全限定名;
+    - scope属性: Bean的作用范围, 常用是`singleton`(默认)和`prototype`;
+    - `<property>`标签: 属性注入:
+        - name属性: 属性名称;
+        - value属性: 注入普通属性值;
+        - ref属性: 注入的对象引用
+        - `<list>`标签
+        - `<map>`标签
+        - `<properties>`标签
+        - ...
+    - `<constructor-arg>` 标签
+- `<import>`标签: 导入其他Spring配置分文件
