@@ -1,0 +1,28 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkouy
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Install and build
+        run: |
+          npm install
+          npm run build
+        env:
+          CI: false
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        run: |
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: public
