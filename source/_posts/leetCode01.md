@@ -125,6 +125,7 @@ class Solution:
 
 # 682. 棒球比赛(易)
 ## 问题:
+[https://leetcode-cn.com/problems/baseball-game](https://leetcode-cn.com/problems/baseball-game)
 > 你现在是一场采用特殊赛制棒球比赛的记录员。这场比赛由若干回合组成，过去几回合的得分可能会影响以后几回合的得分。
 > 比赛开始时，记录是空白的。你会得到一个记录操作的字符串列表 ops，其中 ops[i] 是你需要记录的第 i 项操作，ops 遵循下述规则：
 > 1. 整数 x - 表示本回合新获得分数 x
@@ -174,6 +175,7 @@ class Solution:
 
 # 1598. 文件夹操作日志搜集器(易)
 ## 问题:
+(https://leetcode-cn.com/problems/crawler-log-folder)[https://leetcode-cn.com/problems/crawler-log-folder]
 > 每当用户执行变更文件夹操作时，LeetCode 文件系统都会保存一条日志记录;
 > 下面给出对变更操作的说明:
 > - "../" ：移动到当前文件夹的父文件夹。如果已经在主文件夹下，则 继续停留在当前文件夹;
