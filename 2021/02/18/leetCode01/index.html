@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    leetCode算法之栈 |  成飞的Blog
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="成飞的Blog" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-leetCode01"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  leetCode算法之栈
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/02/18/leetCode01/" class="article-date">
+  <time datetime="2021-02-18T07:15:16.000Z" itemprop="datePublished">2021-02-18</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LeetCode/">LeetCode</a> / <a class="article-category-link" href="/categories/LeetCode/%E7%AE%97%E6%B3%95/">算法</a> / <a class="article-category-link" href="/categories/LeetCode/%E7%AE%97%E6%B3%95/%E6%A0%88/">栈</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">7 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="1021-删除最外层的括号-易"><a href="#1021-删除最外层的括号-易" class="headerlink" title="1021. 删除最外层的括号(易):"></a>1021. 删除最外层的括号(易):</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题:"></a>问题:</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/remove-outermost-parentheses/">https://leetcode-cn.com/problems/remove-outermost-parentheses/</a></p>
+<blockquote>
+<p>有效括号字符串为空 (“”)、”(“ + A + “)” 或 A + B，其中 A 和 B 都是有效的括号字符串，+ 代表字符串的连接。例如，””，”()”，”(())()” 和 “(()(()))” 都是有效的括号字符串。<br>如果有效字符串 S 非空，且不存在将其拆分为 S = A+B 的方法，我们称其为原语（primitive），其中 A 和 B 都是非空有效括号字符串。<br>给出一个非空有效字符串 S，考虑将其进行原语化分解，使得：S = P_1 + P_2 + … + P_k，其中 P_i 是有效括号字符串原语。<br>对 S 进行原语化分解，删除分解中每个原语字符串的最外层括号，返回 S 。</p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路:"></a>思路:</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/remove-outermost-parentheses/solution/shuang-zhi-zhen-ji-shu-fa-by-simzhou/">参考</a><br>关键在于如何判断哪些括号是<strong>最外层括号</strong>;</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h2><h3 id="方法一-双指针法"><a href="#方法一-双指针法" class="headerlink" title="方法一: 双指针法:"></a>方法一: 双指针法:</h3><ul>
+<li>设置两个变量用来表示左括号(left)的下表和右括号(right)匹配情况;</li>
+<li>遍历传入的字符串S;</li>
+<li>当遇到的是左括号(时, right+1, 表示需要多一个)来匹配;</li>
+<li>当遇到右括号)时, right-1, 表示有一个)与最近的(进行了匹配;</li>
+<li>当right==0时, 说明所有的括号都得到了匹配. 此时记录下left和当前位置, 并将left的位置置为下一个位置;</li>
+<li>最后,剔除记录的括号位置<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeOuterParentheses</span>(<span class="params">self, S: <span class="built_in">str</span></span>) -&gt; str:</span></span><br><span class="line">        <span class="comment"># 双指针, 寻找原语化的最外层括号下标</span></span><br><span class="line">        primitive_indices = []</span><br><span class="line">        left, right = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(S)):</span><br><span class="line">            <span class="keyword">if</span> S[i] == <span class="string">&quot;(&quot;</span>:</span><br><span class="line">                right += <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> S[i] == <span class="string">&quot;)&quot;</span>:</span><br><span class="line">                right -= <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> right == <span class="number">0</span>:</span><br><span class="line">                primitive_indices.append((left, i))</span><br><span class="line">                left = i + <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">        <span class="comment"># 根据下标, 提取原语</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>.join(S[m+<span class="number">1</span>: n] <span class="keyword">for</span> m, n <span class="keyword">in</span> primitive_indices)</span><br></pre></td></tr></table></figure>
+⏲ 时间复杂度：O(n)O(n)<br>💾 空间复杂度：O(n)O(n)，使用了额外数组存放最外层括号下标</li>
+</ul>
+<h3 id="方法2：单指针计数"><a href="#方法2：单指针计数" class="headerlink" title="方法2：单指针计数:"></a>方法2：单指针计数:</h3><ul>
+<li>定义两个变量, 保存结果的res 和 记录右括号匹配情况的right;</li>
+<li>遍历字符串S, 获取单个字符c;</li>
+<li><code>if c == &#39;(&#39; and right &gt; 0</code>: 说明右括号匹配不完全, 不是最外层括号, 所以, 将c保存到res;</li>
+<li><code>if c == &#39;)&#39; and right &gt; 1</code>: 虽然遇到了右括号,但还需一个右括号做匹配, 说明不是最外层的括号, 所以, 将c保存到res;<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeOuterParentheses</span>(<span class="params">self, S: <span class="built_in">str</span></span>) -&gt; str:</span></span><br><span class="line">        res, right = <span class="string">&quot;&quot;</span>, <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> S:</span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">&#x27;(&#x27;</span> <span class="keyword">and</span> right &gt; <span class="number">0</span>:</span><br><span class="line">                res += c</span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">&#x27;)&#x27;</span> <span class="keyword">and</span> right &gt; <span class="number">1</span>:</span><br><span class="line">                res += c</span><br><span class="line">            </span><br><span class="line">            right += <span class="number">1</span> <span class="keyword">if</span> c == <span class="string">&#x27;(&#x27;</span> <span class="keyword">else</span> -<span class="number">1</span>  <span class="comment"># 三元表达式</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+⏲ 时间复杂度：O(n)O(n)<br>💾 空间复杂度：O(n)O(n)，使用了额外数组存放结果</li>
+</ul>
+<h3 id="方法3-辅助栈"><a href="#方法3-辅助栈" class="headerlink" title="方法3: 辅助栈:"></a>方法3: 辅助栈:</h3><p>定义一个单调栈，它的单调性在于：栈里面只存在左括号，右括号仅仅是用来消灭左括号的;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeOuterParentheses</span>(<span class="params">self, S: <span class="built_in">str</span></span>) -&gt; str:</span></span><br><span class="line">        res, stack = <span class="string">&quot;&quot;</span>, []</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> S:</span><br><span class="line">            <span class="comment"># 什么情况下，某个括号要加入结果中呢？非外层括号.</span></span><br><span class="line">            <span class="comment"># 怎么判断是非外层括号? 1. 左括号加入结果前，栈不为空。2. 右括号加入结果并消括号后，栈不为空</span></span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">&quot;(&quot;</span>:</span><br><span class="line">                <span class="keyword">if</span> stack: res += c</span><br><span class="line">                stack.append(c)</span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">&quot;)&quot;</span>:</span><br><span class="line">                stack.pop()</span><br><span class="line">                <span class="keyword">if</span> stack: res += c</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<p>⏲ 时间复杂度：O(n)O(n)<br>💾 空间复杂度：O(n)O(n)，使用了栈</p>
+<h1 id="1047-删除字符串中的所有相邻重复项-易"><a href="#1047-删除字符串中的所有相邻重复项-易" class="headerlink" title="1047. 删除字符串中的所有相邻重复项(易):"></a>1047. 删除字符串中的所有相邻重复项(易):</h1><h2 id="问题-1"><a href="#问题-1" class="headerlink" title="问题:"></a>问题:</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/">https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/</a></p>
+<blockquote>
+<p>给出由小写字母组成的字符串 S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。<br>在 S 上反复执行重复项删除操作，直到无法继续删除。<br>在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。</p>
+</blockquote>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：&quot;abbaca&quot;</span><br><span class="line">输出：&quot;ca&quot;</span><br><span class="line">解释：</span><br><span class="line">例如，在 &quot;abbaca&quot; 中，我们可以删除 &quot;bb&quot; 由于两字母相邻且相同，这是此时唯一可以执行删除操作的重复项。之后我们得到字符串 &quot;aaca&quot;，其中又只有 &quot;aa&quot; 可以执行重复项删除操作，所以最后的字符串为 &quot;ca&quot;。</span><br></pre></td></tr></table></figure>
+<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路:"></a>思路:</h2><p>匹配弹出，不匹配留下;</p>
+<h2 id="方法-1"><a href="#方法-1" class="headerlink" title="方法:"></a>方法:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeDuplicates</span>(<span class="params">self, S: <span class="built_in">str</span></span>) -&gt; str:</span></span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> S:</span><br><span class="line">            <span class="keyword">if</span> stack <span class="keyword">and</span> stack[-<span class="number">1</span>] == c:</span><br><span class="line">                stack.pop()</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                stack.append(c)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>.join(stack)</span><br></pre></td></tr></table></figure>
+<h1 id="682-棒球比赛-易"><a href="#682-棒球比赛-易" class="headerlink" title="682. 棒球比赛(易)"></a>682. 棒球比赛(易)</h1><h2 id="问题-2"><a href="#问题-2" class="headerlink" title="问题:"></a>问题:</h2><blockquote>
+<p>你现在是一场采用特殊赛制棒球比赛的记录员。这场比赛由若干回合组成，过去几回合的得分可能会影响以后几回合的得分。<br>比赛开始时，记录是空白的。你会得到一个记录操作的字符串列表 ops，其中 ops[i] 是你需要记录的第 i 项操作，ops 遵循下述规则：</p>
+<ol>
+<li>整数 x - 表示本回合新获得分数 x</li>
+<li>“+” - 表示本回合新获得的得分是前两次得分的总和。题目数据保证记录此操作时前面总是存在两个有效的分数。</li>
+<li>“D” - 表示本回合新获得的得分是前一次得分的两倍。题目数据保证记录此操作时前面总是存在一个有效的分数。</li>
+<li>“C” - 表示前一次得分无效，将其从记录中移除。题目数据保证记录此操作时前面总是存在一个有效的分数。</li>
+</ol>
+<p>请你返回记录中所有得分的总和</p>
+</blockquote>
+<p>示例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">输入：ops &#x3D; [&quot;5&quot;,&quot;-2&quot;,&quot;4&quot;,&quot;C&quot;,&quot;D&quot;,&quot;9&quot;,&quot;+&quot;,&quot;+&quot;]</span><br><span class="line">输出：27</span><br><span class="line">解释：</span><br><span class="line">&quot;5&quot; - 记录加 5 ，记录现在是 [5]</span><br><span class="line">&quot;-2&quot; - 记录加 -2 ，记录现在是 [5, -2]</span><br><span class="line">&quot;4&quot; - 记录加 4 ，记录现在是 [5, -2, 4]</span><br><span class="line">&quot;C&quot; - 使前一次得分的记录无效并将其移除，记录现在是 [5, -2]</span><br><span class="line">&quot;D&quot; - 记录加 2 * -2 &#x3D; -4 ，记录现在是 [5, -2, -4]</span><br><span class="line">&quot;9&quot; - 记录加 9 ，记录现在是 [5, -2, -4, 9]</span><br><span class="line">&quot;+&quot; - 记录加 -4 + 9 &#x3D; 5 ，记录现在是 [5, -2, -4, 9, 5]</span><br><span class="line">&quot;+&quot; - 记录加 9 + 5 &#x3D; 14 ，记录现在是 [5, -2, -4, 9, 5, 14]</span><br><span class="line">所有得分的总和 5 + -2 + -4 + 9 + 5 + 14 &#x3D; 27</span><br></pre></td></tr></table></figure>
+<h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路:"></a>思路:</h2><p>…</p>
+<h2 id="方法-2"><a href="#方法-2" class="headerlink" title="方法:"></a>方法:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">calPoints</span>(<span class="params">self, ops: List[<span class="built_in">str</span>]</span>) -&gt; int:</span></span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> ops:</span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">&quot;+&quot;</span>:</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(stack) &gt; <span class="number">1</span>:</span><br><span class="line">                    stack.append(stack[-<span class="number">1</span>]+stack[-<span class="number">2</span>])</span><br><span class="line">            <span class="keyword">elif</span> c == <span class="string">&quot;D&quot;</span>:</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(stack) &gt; <span class="number">0</span>:</span><br><span class="line">                    stack.append(stack[-<span class="number">1</span>]*<span class="number">2</span>)</span><br><span class="line">            <span class="keyword">elif</span> c == <span class="string">&quot;C&quot;</span>:</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(stack) &gt; <span class="number">0</span>:</span><br><span class="line">                    stack.pop()</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                stack.append(<span class="built_in">int</span>(c))</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sum</span>(stack)</span><br></pre></td></tr></table></figure>
+<h1 id="1598-文件夹操作日志搜集器-易"><a href="#1598-文件夹操作日志搜集器-易" class="headerlink" title="1598. 文件夹操作日志搜集器(易)"></a>1598. 文件夹操作日志搜集器(易)</h1><h2 id="问题-3"><a href="#问题-3" class="headerlink" title="问题:"></a>问题:</h2><blockquote>
+<p>每当用户执行变更文件夹操作时，LeetCode 文件系统都会保存一条日志记录;<br>下面给出对变更操作的说明:</p>
+<ul>
+<li>“../“ ：移动到当前文件夹的父文件夹。如果已经在主文件夹下，则 继续停留在当前文件夹;</li>
+<li>“./“ ：继续停留在当前文件夹;</li>
+<li>“x/“ ：移动到名为 x 的子文件夹中。题目数据 保证总是存在文件夹 x;</li>
+</ul>
+<p>给你一个字符串列表 logs ，其中 logs[i] 是用户在 ith 步执行的操作;<br>文件系统启动时位于主文件夹，然后执行 logs 中的操作。<br>执行完所有变更文件夹操作后，请你找出 返回主文件夹所需的最小步数.</p>
+</blockquote>
+<h2 id="思路-3"><a href="#思路-3" class="headerlink" title="思路:"></a>思路:</h2><p>…</p>
+<h2 id="方法-3"><a href="#方法-3" class="headerlink" title="方法:"></a>方法:</h2><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一:"></a>方法一:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minOperations</span>(<span class="params">self, logs: List[<span class="built_in">str</span>]</span>) -&gt; int:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> f <span class="keyword">in</span> logs:</span><br><span class="line">            <span class="keyword">if</span> f == <span class="string">&quot;../&quot;</span>:</span><br><span class="line">                res = <span class="built_in">max</span>(<span class="number">0</span>, res-<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">elif</span> f != <span class="string">&quot;./&quot;</span>:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二:"></a>方法二:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minOperations</span>(<span class="params">self, logs: List[<span class="built_in">str</span>]</span>) -&gt; int:</span></span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> f <span class="keyword">in</span> logs:</span><br><span class="line">            <span class="keyword">if</span> f == <span class="string">&quot;./&quot;</span>:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">            <span class="keyword">elif</span> f == <span class="string">&quot;../&quot;</span>:</span><br><span class="line">                <span class="keyword">if</span> stack:</span><br><span class="line">                    stack.pop()</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                stack.append(f)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(stack)</span><br></pre></td></tr></table></figure>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2021/02/18/leetCode01/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2021/01/31/javaSpring-002/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Java spring 入门二</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "qN5SC467uXSyyDUAN8KGgUrk-gzGzoHsz",
+    app_key: "B9QicLkzMLUsYV8cDEgjCxIq",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2021
+        <i class="ri-heart-fill heart_icon"></i> zhouChengfei
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279581307&amp;web_id=1279581307'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.png" alt="成飞的Blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/photos">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/aliPay.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechatPay.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="86"
+        src="//music.163.com/outchain/player?type=2&id=1436910205&auto=1&height=66"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":450,"hOffset":200,"vOffset":-20},"mobile":{"show":false},"react":{"opacity":0.7},"dialog":{"enable":true,"hitokoto":true},"log":false});</script></body>
+
+</html>
