@@ -216,4 +216,257 @@ class Solution:
                 stack.append(f)
         return len(stack)
 ```
+# 496. 下一个更大元素I(易):
+## 问题:
+[https://leetcode-cn.com/problems/next-greater-element-i/](https://leetcode-cn.com/problems/next-greater-element-i/)
+> 给你两个 没有重复元素 的数组 nums1 和 nums2 ，其中nums1 是 nums2 的子集。
+> 请你找出 nums1 中每个元素在 nums2 中的下一个比其大的值。
+> nums1 中数字 x 的下一个更大元素是指 x 在 nums2 中对应位置的右边的第一个比 x 大的元素。如果不存在，对应位置输出 -1;
 
+## 思路:
+[参考](https://leetcode-cn.com/problems/next-greater-element-i/solution/dan-diao-zhan-zong-jie-by-wu-xian-sen-2/)
+### 单调栈总结:
+- 单调递增: 从 栈底 到 栈顶 递增, 栈顶大;
+- 单调递减: 从 栈底 到 栈顶 递减, 栈顶小;
+
+### 什么时候使用调用栈:
+现有一维数组, 寻找任意一元素右边(左边)第一个比自己大(小)的元素, 且要求O(n)的时间复杂度;
+### 模板套路:
+```python
+# coding=utf-8
+# 1) 当前项向右找第一个比自己大的位置 -- 从右向左维护一个单调递减栈
+def nextGreaterElement_01(nums: list):
+    res, stack = [-1] * len(nums), []
+
+    for i in range(len(nums)-1, -1, -1):
+        while stack and stack[-1] <= nums[i]:
+            stack.pop()
+        if stack:
+            res[i] = stack[-1]
+        stack.append(nums[i])
+
+    return res
+
+# 当前项向右找第一个比自己大的位置 -- 从左向右维护一个单调递减栈
+def nextGreaterElement_011(nums: list):
+    res, stack = [-1] * len(nums), []
+
+    for i in range(len(nums)):
+        while stack and nums[stack[-1]] < nums[i]:
+            res[stack.pop()] = nums[i]
+        stack.append(i)
+    return res
+
+# 2) 当前项向右第一个比自己小的位置 -- 从右向左维护一个单调递增栈:
+def nextGreaterElement_02(nums: list):
+    res, stack = [-1] * len(nums), []
+    for i in range(len(nums)):
+        while stack and stack[-1] >= nums[i]:
+            stack.pop()
+        if stack:
+            res[i] = stack[-1]
+        stack.append(nums[i])
+    return res
+
+
+# 3) 当前项向左找第一个比自己大的位置 -- 从左向右维护一个单调递减栈:
+def nextGreaterElement_03(nums: list):
+    res, stack = [-1] * len(nums), []
+
+    for i in range(len(nums)):
+        while stack and stack[-1] <= nums[i]:
+            stack.pop()
+        if stack:
+            res[i] = stack[-1]
+        stack.append(nums[i])
+    return res
+
+
+# 4) 当前项向左找第一个比自己小的位置 -- 从左向右维护一个单调递增的栈:
+def nextGreaterElement_04(nums: list):
+    res, stack = [-1] * len(nums), []
+
+    for i in range(len(nums)):
+        while stack and stack[-1] >= nums[i]:
+            stack.pop()
+        if stack:
+            res[i] = stack[-1]
+        stack.append(nums[i])
+    return res
+
+
+if __name__ == "__main__":
+    nums = [1,3,4,2]
+    print(f"目标列表: {nums}")
+    res1 = nextGreaterElement_01(nums)
+    print(f"->大: {res1}") # ->大: [3, 4, -1, -1]
+
+    res11 = nextGreaterElement_011(nums)
+    print(f"->大: {res11}") # ->大: [3, 4, -1, -1]
+
+    res2 = nextGreaterElement_02(nums)
+    print(f"->小: {res2}") # ->小: [-1, 1, 3, 1]
+
+    res3 = nextGreaterElement_03(nums)
+    print(f"<-大: {res3}") # <-大: [-1, -1, -1, 4]
+
+    res4 = nextGreaterElement_04(nums)
+    print(f"<-小: {res4}") # <-小: [-1, 1, 3, 1]
+```
+
+## 方法:
+### 方法一: 暴力破解:
+找元素右侧比自己大的第一个位置
+```python
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        dic = {}
+
+        for i in range(len(nums2)):
+            j = i + 1
+            while j < len(nums2) and nums2[i] >= nums2[j]:
+                j += 1
+            if j < len(nums2) and nums2[i] < nums2[j]:
+                dic[nums2[i]] = nums2[j]
+        return [dic.get(x, -1) for x in nums1]
+```
+### 方法二: 单调栈递增
+> 当前项向右找第一个比自己大的位置 —— 从右向左维护一个单调递减栈
+```python
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        dic, stack = {}, []
+        for i in range(len(nums2)-1, -1, -1):
+            while stack and stack[-1] <= nums2[i]:
+                stack.pop()
+            if stack:
+                dic[nums2[i]] = stack[-1]
+            stack.append(nums2[i])
+        return [dic.get(x, -1) for x in nums1]
+```
+### 方法三: 单调栈递减:
+> 从左到右维护单调递减栈, 找元素右侧区域，第一个比自己大的位置
+```python
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        dic, stack = {}, []
+        for i in range(len(nums2)):
+            while stack and stack[-1] < nums2[i]:
+                dic[stack.pop()] = nums2[i]
+            stack.append(nums2[i])
+        return [dic.get(x, -1) for x in nums1]
+```
+
+# 225. 用队列实现栈
+## 问题:
+[https://leetcode-cn.com/problems/implement-stack-using-queues/](https://leetcode-cn.com/problems/implement-stack-using-queues/)
+> 请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通队列的全部四种操作(push、top、pop 和 empty);
+> 实现 MyStack 类：
+> - void push(int x) 将元素 x 压入栈顶。
+> - int pop() 移除并返回栈顶元素。
+> - int top() 返回栈顶元素。
+> - boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
+>
+> **注意:**
+> - 你只能使用队列的基本操作 —— 也就是 push to back、peek/pop from f- ront、size 和 is empty 这些操作;
+> - 你所使用的语言也许不支持队列; 你可以使用 list(列表) 或者 deque(双端队列)来模拟一个队列, 只要是标准的队列操作即可;
+
+## 思路:
+[参考](https://leetcode-cn.com/problems/implement-stack-using-queues/solution/yong-dui-lie-shi-xian-zhan-by-leetcode-solution/)
+
+## 方法:
+## 方法一:
+```python
+class MyStack:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.Q1, self.Q2 = [], []
+
+
+    def push(self, x: int) -> None:
+        """
+        Push element x onto stack.
+        """
+        self.Q2.append(x)
+        self.Q2.extend(self.Q1)
+        self.Q1, self.Q2 = self.Q2, [], 
+
+
+    def pop(self) -> int:
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+        return self.Q1.pop(0)
+
+
+    def top(self) -> int:
+        """
+        Get the top element.
+        """
+        return self.Q1[0]
+
+
+    def empty(self) -> bool:
+        """
+        Returns whether the stack is empty.
+        """
+        return False if self.Q1 else True
+
+
+# Your MyStack object will be instantiated and called as such:
+# obj = MyStack()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.empty()
+```
+## 方法二:
+```python
+# coding=utf-8
+
+import collections
+
+class MyStack(object):
+    # 两个对列
+    def __init__(self):
+        self.Q1, self.Q2 = collections.deque(), collections.deque()
+    
+    def push(self, x: int):
+        """
+        Push element x onto stack.
+        """
+        self.Q2.append(x)
+        while self.Q1:
+            self.Q2.append(self.Q1.popleft())
+        self.Q1, self.Q2 = self.Q2, self.Q1
+    
+    def pop(self):
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+        return self.Q1.popleft()
+
+
+    def top(self):
+        """
+        Get the top element.
+        """
+        return self.Q1[0]
+
+
+    def empty(self):
+        """
+        Returns whether the stack is empty.
+        """
+        return not self.Q1
+
+if __name__ == "__main__":
+    myStack = MyStack()
+    myStack.push(1)
+    myStack.push(2)
+    print(myStack.top())
+    print(myStack.pop())
+    print(myStack.empty())
+```
