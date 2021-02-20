@@ -21,3 +21,285 @@ categories:
 它是从磁盘路径上加载配置文件, 配置可以在磁盘的任意位置;
 
 ### 2.3 AnnotationConfigApplicationContext:
+当时用注解配置容器对象时, 需要使用此类来常见spring容器; 它用来读取注解;
+
+## 3. getBean()方法使用:
+```java
+public Object getBean(String name) throw BeansException {
+    // 容器中定义的id
+    assertBeanFactoryActive();
+    return getBeanFactory().getBean(name);
+}
+
+public <T> T getBean(class<T> requiredType) throws Beanxception {
+    // requiredType: 字节码对象类型
+    assertBeanFactoryActive();
+    return getBeanFactory().getBean(requiredType);
+}
+```
+
+# 二、Spring配置数据源:
+## 1. 数据源(连接池)的作用:
+- 数据源是提高程序性能出现的;
+- 事先实例化数据源, 初始化部分连接资源;
+- 使用连接资源时从数据源中获取;
+- 使用完毕后将连接资源归还给数据源;
+
+常见的数据源(连接池):**DBCP, C3P0, BoneCP, Druid等**
+## 2.数据源手动创建:
+- 创建一个新的maven项目:`spring_ioc_anno`
+- 配置文件导入配置坐标:
+`spring_ioc_anno/pom.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns=...>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>spring_ioc_anno</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.32</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+```
+- 创建一般测试代码:
+`spring_ioc_anno/src/test/java/datasource/test/DataSourceTest.java`
+```java
+package datasource.test;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.junit.Test;
+
+import java.sql.Connection;
+
+
+public class DataSourceTest {
+    @Test
+    public void test1() throws Exception {
+        // 测试手动创建c3p0数据源
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        dataSource.setDriverClass("com.mysql.jdbc.Driver");
+        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/test");
+        dataSource.setUser("root");
+        dataSource.setPassword("root123");
+        Connection conn = dataSource.getConnection();
+
+        // 使用数据库
+        System.out.println(conn); // com.mchange.v2.c3p0.impl.NewProxyConnection@2928854b
+        // 释方连接
+        conn.close();
+    }
+
+    @Test
+    public void test2() throws Exception {
+        // 测试手动创建druid数据源
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/test");
+        dataSource.setUsername("root");
+        dataSource.setPassword("root123");
+        Connection conn = dataSource.getConnection();
+        // 使用数据库
+        System.out.println(conn); // com.mysql.jdbc.JDBC4Connection@7334aada
+
+        // 释方连接
+        conn.close();
+    }
+}
+```
+
+不管是使用`c3p0`还是`druid`作为数据源, 数据源的配置与源码是耦合的; 因此将配置参数抽取到配置文件中;
+
+- 创建配置文件:
+`spring_ioc_anno/src/test/resources/jdbc.properties`
+```
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/test
+jdbc.username=root
+jdbc.password=root123
+```
+- 修改测试代码:
+```java
+package datasource.test;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.junit.Test;
+
+import java.sql.Connection;
+import java.util.ResourceBundle;
+
+
+public class DataSourceTest {
+    @Test
+    // 测试手动创建c3p0数据源(加载properties配置文件)
+    public void test3() throws Exception {
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        // 读取配置文件
+        ResourceBundle rb = ResourceBundle.getBundle("jdbc");
+        dataSource.setDriverClass(rb.getString("jdbc.driver"));
+        dataSource.setJdbcUrl(rb.getString("jdbc.url"));
+        dataSource.setUser(rb.getString("jdbc.username"));
+        dataSource.setPassword(rb.getString("jdbc.password"));
+
+        Connection conn = dataSource.getConnection();
+        // 使用数据库
+        System.out.println(conn); // com.mchange.v2.c3p0.impl.NewProxyConnection@5e0826e7
+        // 释方连接
+        conn.close();
+    }
+
+    @Test
+    // 测试手动创建druid数据源(加载properties配置文件)
+    public void test4() throws Exception {
+        DruidDataSource dataSource = new DruidDataSource();
+        ResourceBundle rb = ResourceBundle.getBundle("jdbc");
+        dataSource.setDriverClassName(rb.getString("jdbc.driver"));
+        dataSource.setUrl(rb.getString("jdbc.url"));
+        dataSource.setUsername(rb.getString("jdbc.username"));
+        dataSource.setPassword(rb.getString("jdbc.password"));
+
+        Connection conn = dataSource.getConnection();
+        // 使用数据库
+        System.out.println(conn); // com.mysql.jdbc.JDBC4Connection@6e20b53a
+        // 释方连接
+        conn.close();
+    }
+}
+
+```
+## 3. spring配置数据源:
+可以将DataSource的创建权交由Sprint容器去完成;
+- 导入spring坐标:
+`spring_ioc_anno/pom.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project ...>
+    <properties> ...</properties>
+    <dependencies>
+        ...
+        <!-- 导入spring坐标-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.0.5.RELEASE</version>
+        </dependency>
+    </dependencies>
+</project>
+```
+- 配置applicationContext.xml:
+`spring_ioc_anno/src/test/resources/applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans ...>
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="root123"></property>
+    </bean>
+</beans>
+```
+- 测试代码:
+`spring_ioc_anno/src/test/java/datasource/test/DataSourceTest.java`
+```java
+package datasource.test;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.util.ResourceBundle;
+
+
+public class DataSourceTest {
+    @Test
+    // 测试spring容器产生数据源对象
+    public void test5() throws Exception {
+        ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+        DataSource dataSource = (DataSource) app.getBean("dataSource");
+        Connection conn = dataSource.getConnection();
+        System.out.println(conn);   // com.mchange.v2.c3p0.impl.NewProxyConnection@75c56eb9
+        conn.close();
+    }
+}
+```
+
+## 4. 抽取jdbc配置文件:
+`applicationContext.xml`加载`jdbc.properties`配置文件获得连接信息;
+- 需要引入context命名空间和约束路径:
+    - 命名空间: `xmlns:context="http://www.springframework.org/schema/context"`
+    - 约束路径: `xsi:schemaLocation="
+                http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+`
+`spring_ioc_anno/src/test/resources/applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+                http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!-- 加载外部的properties文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+    
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"></property>
+        <property name="jdbcUrl" value="${jdbc.url}"></property>
+        <property name="user" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+</beans>
+```
+
+# 三、spring注解开发:
+## 1. spring原始注解:
+spring是轻代码重配置的框架, 配置比较繁重, 影响开发效率, 所以注解开发是一种趋势, 注解代替xml配置文件可以简化配置, 提高开发效率;
+spring原始注解主要代替&lt;bean&gt;的配置:
+|注解|说明|
+|-|-|
+|@Component|使用在类上用于实例化Bean|
+|@Controller|使用在web层类上用于实例化Bean|
+|@Service|使用在Service层类上用于实例化Bean|
+|@Repository|使用在dao层类上用于实例化Bean|
+|@Autowired|使用在字段上用于根据类型依赖注入|
+|@Qualifier|结合@Autowired一起使用用于根据名称进行依赖注入|
+|@Resource|相当于@Autowired+@Qualifier, 按照名称进行注入|
+|@Value|注入普通属性|
+|@Scope|标注Bean的作用范围|
+|@PostConstruct|使用在方法上标注该方法是Bean的初始化方法|
+|PreDestroy|使用在方法上标注该方法是Bean的销毁方法|
