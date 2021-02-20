@@ -470,3 +470,134 @@ if __name__ == "__main__":
     print(myStack.pop())
     print(myStack.empty())
 ```
+# 232. 用栈实现队列(易):
+## 问题:
+> 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列的支持的所有操作（push、pop、peek、empty）：
+>
+>实现 MyQueue 类:
+> - void push(int x) 将元素 x 推到队列的末尾
+> - int pop() 从队列的开头移除并返回元素
+> - int peek() 返回队列开头的元素
+> - boolean empty() 如果队列为空，返回 true ；否则，返回 false
+>
+> 说明：
+>
+> - 你只能使用标准的栈操作 —— 也就是只有 push to top, peek/pop from top, size, 和 is empty 操作是合法的。
+> - 你所使用的语言也许不支持栈。你可以使用 list 或者 deque（双端队列）来模拟一个栈，只要是标准的栈操作即可。
+>
+> 进阶：
+> - 你能否实现每个操作均摊时间复杂度为 O(1) 的队列？换句话说，执行 n 个操作的总时间复杂度为 O(n) ，即使其中一个操作可能花费较长时间。
+
+## 思路:
+...
+[参考](https://leetcode-cn.com/problems/implement-queue-using-stacks/solution/yong-zhan-shi-xian-dui-lie-by-leetcode/)
+
+## 方法:
+### 方法一:
+```python
+class MyQueue:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.S1, self.S2 = collections.deque(), collections.deque()
+
+
+    def push(self, x: int) -> None:
+        """
+        Push element x to the back of queue.
+        """
+        self.S2.append(x)
+        while self.S1:
+            self.S2.append(self.S1.popleft())
+        self.S1, self.S2 = self.S2, self.S1
+
+
+    def pop(self) -> int:
+        """
+        Removes the element from in front of queue and returns that element.
+        """
+        return self.S1.pop()
+
+
+    def peek(self) -> int:
+        """
+        Get the front element.
+        """
+        return self.S1[-1]
+
+
+    def empty(self) -> bool:
+        """
+        Returns whether the queue is empty.
+        """
+        return not self.S1
+
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
+```
+
+# 1441. 用栈操作构建数组:
+## 问题:
+> 给你一个目标数组 target 和一个整数 n。每次迭代，需要从  list = {1,2,3..., n} 中依序读取一个数字。
+> 请使用下述操作来构建目标数组 target ：
+> - Push：从 list 中读取一个新元素， 并将其推入数组中。
+> - Pop：删除数组中的最后一个元素。
+> - 如果目标数组构建完成，就停止读取更多元素。
+>
+>题目数据保证目标数组严格递增，并且只包含 1 到 n 之间的数字。
+> 请返回构建目标数组所用的操作序列。
+> 题目数据保证答案是唯一的。
+
+示例 1:
+```
+输入：target = [1,3], n = 3
+输出：["Push","Push","Pop","Push"]
+解释： 
+读取 1 并自动推入数组 -> [1]
+读取 2 并自动推入数组，然后删除它 -> [1]
+读取 3 并自动推入数组 -> [1,3]
+```
+
+## 思路:
+...
+
+## 方法:
+### 方法一:
+```python
+class Solution:
+    def buildArray(self, target: List[int], n: int) -> List[str]:
+        res = []
+        curr = 0
+        for i in target:
+            if i - curr == 1:
+                res.append("Push")
+            else:
+                res.extend(['Push', 'Pop'] * (i - curr - 1))
+                res.append('Push')
+            curr = i
+        return res
+```
+### 方法二:
+```python
+class Solution:
+    def buildArray(self, target: List[int], n: int) -> List[str]:
+        res = []
+        curr = 0
+        for i in range(1, n+1):
+            if curr >= len(target):
+                break
+            elif i == target[curr]:
+                res.append("Push")
+                curr +=1
+            else:
+                res.extend(['Push', 'Pop'])
+        return res
+```
