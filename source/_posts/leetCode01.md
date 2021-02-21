@@ -601,3 +601,124 @@ class Solution:
                 res.extend(['Push', 'Pop'])
         return res
 ```
+
+# 155. 最小栈:
+## 问题:
+> 设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈。
+> - push(x) —— 将元素 x 推入栈中。
+> - pop() —— 删除栈顶的元素。
+> - top() —— 获取栈顶元素。
+> - getMin() —— 检索栈中的最小元素。
+
+## 思路:
+[参考](https://leetcode-cn.com/problems/min-stack/solution/zui-xiao-zhan-by-leetcode-solution/)
+
+## 方法:
+```python
+class MinStack:
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stack,self.minNum = collections.deque(), collections.deque([math.inf])
+
+    def push(self, x: int) -> None:
+        self.minNum.append(min(x, self.minNum[-1]))
+        self.stack.append(x)
+
+    def pop(self) -> None:
+        self.minNum.pop()
+        self.stack.pop()
+        
+    def top(self) -> int:
+        return self.stack[-1]
+
+    def getMin(self) -> int:
+        return self.minNum[-1]
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(x)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
+```
+# 844. 比较含退格的字符串:
+## 问题:
+> 给定 S 和 T 两个字符串，当它们分别被输入到空白的文本编辑器后，判断二者是否相等，并返回结果。 # 代表退格字符。
+> 注意：如果对空文本输入退格字符，文本继续为空。
+## 思路:
+
+## 方法:
+```python
+class Solution:
+    def backspaceCompare(self, S: str, T: str) -> bool:
+        # 使用栈
+        def rebuild(input_str):
+            stack = []
+            for s in input_str:
+                if s != '#':
+                    stack.append(s)
+                    continue
+                if len(stack) > 0:
+                    stack.pop()
+                    continue
+            return "".join(stack)
+        
+        return rebuild(S) == rebuild(T)
+```
+# 1544. 整理字符串
+## 问题:
+> 给你一个由大小写英文字母组成的字符串 s.
+> 一个整理好的字符串中，两个相邻字符 s[i] 和 s[i+1]，其中 0<= i <= s.length-2 ，要满足如下条件:
+> - 若 s[i] 是小写字符，则 s[i+1] 不可以是相同的大写字符。
+> - 若 s[i] 是大写字符，则 s[i+1] 不可以是相同的小写字符。
+> 请你将字符串整理好，每次你都可以从字符串中选出满足上述条件的 两个相邻 字符并删除，直到字符串整理好为止。
+> 请返回整理好的 字符串 。题目保证在给出的约束条件下，测试样例对应的答案是唯一的。
+> **注意**：空字符串也属于整理好的字符串，尽管其中没有任何字符。
+
+示例:
+> 输入：s = "abBAcC"
+> 输出：""
+> 解释：存在多种不同情况，但所有的情况都会导致相同的结果。例如：
+"abBAcC" --> "aAcC" --> "cC" --> ""
+"abBAcC" --> "abBA" --> "aA" --> ""
+## 思路:
+...
+
+## 方法:
+```python
+class Solution:
+    def makeGood(self, s: str) -> str:
+        res = []
+        for c in s:
+            if res and res[-1].lower() == c.lower() and res[-1] != c:
+                res.pop()
+            else:
+                res.append(c)
+        return "".join(res)
+```
+
+# 20. 有效的括号:
+## 问题:
+> 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+> 有效字符串需满足：
+> - 左括号必须用相同类型的右括号闭合。
+> - 左括号必须以正确的顺序闭合。
+## 思路:
+
+## 方法:
+```python
+class Solution:
+    def isValid(self, s: str) -> bool:
+        dmap = {'}': '{', ')':'(', ']': '['}
+        stack = []
+        for c in s:
+            if stack and c in dmap:
+                if stack[-1] == dmap[c]:
+                    stack.pop()
+                else: return False
+            else: stack.append(c)
+        return not stack
+```
