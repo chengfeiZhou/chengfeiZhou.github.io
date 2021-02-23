@@ -722,3 +722,260 @@ class Solution:
             else: stack.append(c)
         return not stack
 ```
+
+# 173. 二叉搜索树迭代器(中):
+## 问题:
+> 实现一个二叉搜索树迭代器。你将使用二叉搜索树的根节点初始化迭代器。
+> 调用 next() 将返回二叉搜索树中的下一个最小的数。
+![](/images/leetcode/173_BStree.png)
+
+```
+BSTIterator iterator = new BSTIterator(root);
+iterator.next();    // 返回 3
+iterator.next();    // 返回 7
+iterator.hasNext(); // 返回 true
+iterator.next();    // 返回 9
+iterator.hasNext(); // 返回 true
+iterator.next();    // 返回 15
+iterator.hasNext(); // 返回 true
+iterator.next();    // 返回 20
+iterator.hasNext(); // 返回 false
+```
+
+**提示**:
+- next() 和 hasNext() 操作的时间复杂度是 O(1)，并使用 O(h) 内存，其中 h 是树的高度。
+- 你可以假设 next() 调用总是有效的，也就是说，当调用 next() 时，BST 中至少存在一个下一个最小的数。
+
+## 思路:
+[参考](https://leetcode-cn.com/problems/binary-search-tree-iterator/solution/er-cha-sou-suo-shu-die-dai-qi-by-leetcode/)
+二叉搜索树的一个重要的特性是是二叉搜索树的中序序列是升序序列；因此，中序遍历是该解决方案的核心
+
+## 方法: 
+
+### 方法一: 扁平化二叉搜索树
+将二叉搜索树按中序遍历开展;
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class BSTIterator:
+
+    def __init__(self, root: TreeNode):
+        # 存放排序后的元素
+        self.sort_array = []
+        # 记录下一个最小值的索引
+        self.index = -1
+        # 将树元素入列表
+        self._inorder(root)
+    
+    def _inorder(self, root: TreeNode):
+        """将树元素按中序遍历"""
+        if not root:
+            return
+        self._inorder(root.left)
+        self.sort_array.append(root.val)
+        self._inorder(root.right)
+
+    def next(self) -> int:
+        self.index += 1
+        return self.sort_array[self.index]
+
+
+    def hasNext(self) -> bool:
+        return self.index + 1 < len(self.sort_array)
+
+
+
+# Your BSTIterator object will be instantiated and called as such:
+# obj = BSTIterator(root)
+# param_1 = obj.next()
+# param_2 = obj.hasNext()
+```
+### 方法二: 受控递归:
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class BSTIterator:
+
+    def __init__(self, root: TreeNode):
+        # 记录所有的左节点
+        self.stack = []
+        # 将树元素入列表
+        self._left_inorder(root)
+    
+    def _left_inorder(self, root: TreeNode):
+        """将树的左节点遍历"""
+        if not root:
+            return
+        self.stack.append(root)
+        self._left_inorder(root.left)
+
+    def next(self) -> int:
+        top_node = self.stack.pop()
+        if top_node.right:
+            # 遍历右节点的左节点
+            self._left_inorder(top_node.right)
+        return top_node.val
+
+
+    def hasNext(self) -> bool:
+        return len(self.stack) > 0 
+
+
+
+# Your BSTIterator object will be instantiated and called as such:
+# obj = BSTIterator(root)
+# param_1 = obj.next()
+# param_2 = obj.hasNext()
+```
+
+# 94. 二叉树的中序遍历:
+## 问题:
+> 给定一个二叉树的根节点 root ，返回它的 中序 遍历
+![](/images/leetcode/94_zhongxu.png)
+## 思路:
+[参考](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/solution/er-cha-shu-de-hou-xu-bian-li-by-leetcode-solution/)
+## 方法:
+### 方法一: 基本思路
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        return self._sort_nodes(root, []) if self._sort_nodes(root, []) else []
+    
+    def _sort_nodes(self, root: TreeNode, res: List[int]):
+        if not root:
+            return
+        self._sort_nodes(root.left, res)
+        res.append(root.val)
+        self._sort_nodes(root.right, res)
+        return res
+```
+
+### 方法二: 内函数:
+```python
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+
+        def _sort_nodes(root: TreeNode):
+            if not root:
+                return
+            _sort_nodes(root.left)
+            res.append(root.val)
+            _sort_nodes(root.right)
+        
+        _sort_nodes(root)
+        return res
+```
+### 方法三: 辅助栈:
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        node_list = []
+        node_vals = []
+        node = root
+
+        while node_list or node:
+            while node:
+                node_list.append(node)
+                node = node.left
+            node = node_list.pop()
+            node_vals.append(node.val)
+            node = node.right
+        return node_vals
+```
+
+# 145. 二叉树的后序遍历(中)
+## 问题:
+> 给定一个二叉树，返回它的 *后序* 遍历。
+示例:
+```
+输入: [1,null,2,3]  
+   1
+    \
+     2
+    /
+   3 
+
+输出: [3,2,1]
+```
+
+## 思路:
+[参考](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/solution/)
+## 方法:
+### 方法一: 递归:
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+
+        def sort_nodes(root: TreeNode):
+            if not root: return
+            sort_nodes(root.left)
+            sort_nodes(root.right)
+            res.append(root.val)
+        sort_nodes(root)
+        return res
+```
+### 方法二: 迭代:
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+
+        res, stack = [], []
+        node = None
+
+        while stack or root:
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            if not root.right or root.right == node:
+                res.append(root.val)
+                node = root
+                root = None
+            else:
+                stack.append(root)
+                root = root.right
+        return res
+```
