@@ -201,3 +201,200 @@ Spring框架监控切入点方法的执行. 一旦监控到切入点方法被运
     </dependencies>
 </project>
 ```
+
+定义目标接口
+`spring_aop\src\main\java\aop\TargetInterface.java`
+```java
+package aop;
+
+public interface TargetInterface {
+    public void save();
+}
+```
+定义目标类
+`spring_aop\src\main\java\aop\Target.java`
+```java
+package aop;
+
+public class Target implements TargetInterface{
+    public void save() {
+        System.out.println("savr running ....");
+    }
+}
+```
+定义增强类:
+`spring_aop\src\main\java\aop\MyAspect.java`
+```java
+package aop;
+
+public class MyAspect {
+    public void before() {
+        System.out.println("前置增强...");
+    }
+    public void afterRun() {
+        System.out.println("后置增强...");
+    }
+}
+```
+
+注册bean
+`spring_aop\src\main\resources\applicationContext.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!--目标对象-->
+    <bean id="target" class="aop.Target"></bean>
+    <!--  切面对象  -->
+    <bean id="myAspect" class="aop.MyAspect"></bean>
+
+    <!--  配置织入: 高速spring框架, 那些方法(切点)需要那些增强 => 需要引入aop的命名空间  -->
+    <aop:config>
+        <!--  声明切面  -->
+        <aop:aspect ref="myAspect">
+            <aop:before method="before" pointcut="execution(public void aop.Target.save())"></aop:before>
+            <aop:after-returnin method="afterRun" pointcut="execution(public void aop.Target.save())"></aop:after-returnin>
+        </aop:aspect>
+    </aop:config>
+</beans>
+```
+
+测试代码:
+`spring_aop\src\test\java\aop\AopTest.java`
+```java
+package aop;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext.xml")
+public class AopTest {
+    @Autowired
+    private TargetInterface target;
+
+    @Test
+    public void test1() {
+        target.save();
+    }
+}
+```
+
+### 1.1 通知类型:
+通知的配置语法:
+`<aop:通知类型 method="切面类中方法名" pointcut="切点表达式"></aop:before>`
+
+|名称|标签|说明|
+|-|-|-|
+|前置通知|<aop:before>|用于配置前置通知. 指定增强方法在切点方法前执行|
+|后置通知|<aop:after-returning>|用于配置后置通知. 指定增强方法在切点方法之后执行|
+|环绕通知|<aop:around>|用于配置环绕通知. 指定增强反方在切点方法之前和之后都执行|
+|异常抛出通知|<aop:throwing>|用于配置异常抛出通知. 指定增强方法出现异常时执行|
+|最终通知|<aop:after>|用于配置最终通知. 无论增强方法执行是否有异常都会执行|
+
+`spring_aop\src\main\java\aop\MyAspect.java`
+```java
+package aop;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+
+public class MyAspect {
+    private int num = 0;
+
+    public void before() {
+        num ++;
+        System.out.println("前置增强..." + num);
+    }
+    public void afterRun() {
+        num += 10;
+        System.out.println("后置增强..." + num);
+    }
+
+    public Object aroundRun(ProceedingJoinPoint pjp) throws Throwable { // ProceedingJoinPoint: 进程连接点 ==> 切点
+        System.out.println("环绕前增强...");
+        // 切点方法
+        Object res = pjp.proceed();
+        System.out.println("环绕后增强...");
+        return res;
+    }
+
+    public void atferThrow() {
+        System.out.println("异常增强...");
+    }
+
+    public void atferPower() {
+        System.out.println("最终增强...");
+    }
+}
+```
+
+`spring_aop\src\main\resources\applicationContext.xml`
+```java
+<aop:config>
+    <!--  声明切面  -->
+    <aop:aspect ref="myAspect">
+        <aop:before method="before" pointcut="execution(public void aop.Target.save())"></aop:before>
+        <aop:after method="afterRun" pointcut="execution(public void aop.Target.save())"></aop:after>
+        <aop:around method="aroundRun" pointcut="execution(* aop.*.*(..))"></aop:around>
+        <aop:after-throwing method="atferThrow" pointcut="execution(* aop.*.*(..))"></aop:after-throwing>
+        <aop:after method="atferPower" pointcut="execution(* aop.*.*(..))"></aop:after>
+    </aop:aspect>
+</aop:config>
+```
+
+执行结果:
+```
+前置增强...1
+环绕前增强...
+save running ....
+最终增强...
+环绕后增强...
+后置增强...11
+```
+添加异常:
+```
+前置增强...1
+环绕前增强...
+最终增强...
+异常增强...
+后置增强...11
+```
+
+
+### 1.2 切点表达式:
+`pointcut=`: 切点表达式; 用来指定`method`增强那些方法;
+表达式语法:
+`execution([修饰符]返回值类型 包名.类名.方法名(参数类型列表))`
+ 
+- 访问修饰符可以不写;
+- 返回值类型, 包名, 类名, 方法名可以使用*, 表示任意;
+- 包名.类名 => 当前包下的类; 包名..类名 => 当前包及其子包下的类;
+- 参数类型列表可以使用.. 表示任意个数, 任意类型的参数列表;
+
+示例:
+```
+execution(public void com.xxx.aop.Target.method()) => com.xxx.aop包下Target类的返回值为void的公有(public)的method()方法;
+execution(void com.xxx.aop.Targe.*(..)) => com.xxx.aop包下Target类的返回值为void的公有(public)的*所有*方法;
+execution(* com.xxx.aop.*.*(..)) => (常用)com.xxx.aop包下的所有类的任意返回值的任意修饰符的*所有*方法;
+execution(* com.xxx.aop..*.*(..)) => com.xxx.aop包*及其子包*下的所有类的任意返回值的任意修饰符的*所有*方法;
+execution(* *..*.*(..)) => 所有
+```
+
+### 1.3 切点表达式抽取:
+当多个增强的切点表达式相同时, 可以将切点表达式进行抽取, 在增强中使用pointcut-ref属性代替pointcut属性来引用抽取后的切点表达式.
+```xml
+<aop:config>
+        <!--  声明切面  -->
+        <aop:aspect ref="myAspect">
+            <!-- 抽取切点表达式 -->
+            <aop:pointcut id="myPointcut" expression="execution(public void aop.Target.save())"/>
+            <aop:after method="atferPower" pointcut-ref="myPointcut"></aop:after>
+        </aop:aspect>
+    </aop:config>
+```
