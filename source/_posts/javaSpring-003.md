@@ -1,5 +1,5 @@
 ---
-title: Java spring 入门三
+title: 三、Spring AOP开发
 date: 2021-02-21 14:15:49
 tags:
     - Java
@@ -286,7 +286,7 @@ public class AopTest {
 }
 ```
 
-### 1.1 通知类型:
+## 2.通知类型:
 通知的配置语法:
 `<aop:通知类型 method="切面类中方法名" pointcut="切点表达式"></aop:before>`
 
@@ -295,7 +295,7 @@ public class AopTest {
 |前置通知|<aop:before>|用于配置前置通知. 指定增强方法在切点方法前执行|
 |后置通知|<aop:after-returning>|用于配置后置通知. 指定增强方法在切点方法之后执行|
 |环绕通知|<aop:around>|用于配置环绕通知. 指定增强反方在切点方法之前和之后都执行|
-|异常抛出通知|<aop:throwing>|用于配置异常抛出通知. 指定增强方法出现异常时执行|
+|异常抛出通知|<aop:after-throwing>|用于配置异常抛出通知. 指定增强方法出现异常时执行|
 |最终通知|<aop:after>|用于配置最终通知. 无论增强方法执行是否有异常都会执行|
 
 `spring_aop\src\main\java\aop\MyAspect.java`
@@ -367,7 +367,7 @@ save running ....
 ```
 
 
-### 1.2 切点表达式:
+## 3.切点表达式:
 `pointcut=`: 切点表达式; 用来指定`method`增强那些方法;
 表达式语法:
 `execution([修饰符]返回值类型 包名.类名.方法名(参数类型列表))`
@@ -397,4 +397,154 @@ execution(* *..*.*(..)) => 所有
             <aop:after method="atferPower" pointcut-ref="myPointcut"></aop:after>
         </aop:aspect>
     </aop:config>
+```
+
+# 三、基于注解的AOP开发:
+## 1. 快速入门:
+基于注解的AOP开发步骤:
+- 创建目标接口和目标类(内部有切点);
+- 创建切面类(内部有增强方法);
+- 将目标类和切面类的对象创建权交给spring;
+- 在切面类中使用注解配置织入关系;
+- 在配置文件中开启组件扫描和AOP的自动代理;
+- 测试代码;
+
+示例:
+- 创建目标接口:
+`spring_aop/src/main/java/anno/TargetInterface.java`
+```java
+package anno;
+
+public interface TargetInterface {
+    public void save();
+}
+```
+- 创建目标类:
+`spring_aop/src/main/java/anno/Target.java`
+```java
+package anno;
+
+import org.springframework.stereotype.Component;
+
+@Component("target")
+public class Target implements TargetInterface {
+
+    public void save() {
+        System.out.println("save running...");
+    }
+}
+```
+- 创建切面类:
+`spring_aop/src/main/java/anno/MyAspect.java`
+```java
+package anno;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Component("myAspect")
+@Aspect // 标注当前类是一个切面
+public class MyAspect {
+    private int num = 0;
+
+    // 配置前置增强
+    @Before("execution(public void anno.Target.save())")
+    public void before() {
+        num ++;
+        System.out.println("前置增强..." + num);
+    }
+    // 异常抛出
+    @AfterThrowing("execution(* aop.*.*(..))")
+    public void atferThrow() {
+        System.out.println("异常增强...");
+    }
+}
+```
+- 配置文件开启注解扫描:
+`spring_aop/src/main/resources/applicationContext-anno.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--  开启组件扫描  -->
+    <context:component-scan base-package="anno"></context:component-scan>
+    <!--  aop自动代理  -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>
+```
+- 测试部分:
+`spring_aop/src/test/java/test/AnnoTest.java`
+```java
+package test;
+
+import anno.TargetInterface;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext-anno.xml")
+public class AnnoTest {
+    @Autowired
+    private TargetInterface target1;
+
+    @Test
+    public void test1() {
+        target1.save();
+    }
+}
+```
+## 2. 注解通知的类型:
+通知的配置语法: `@通知注解("切点表达式")`
+|名称|标签|说明|
+|-|-|-|
+|前置通知|@Before|用于配置前置通知. 指定增强方法在切点方法前执行|
+|后置通知|@AfterReturning|用于配置后置通知. 指定增强方法在切点方法之后执行|
+|环绕通知|@Around|用于配置环绕通知. 指定增强反方在切点方法之前和之后都执行|
+|异常抛出通知|@AtferThrowing|用于配置异常抛出通知. 指定增强方法出现异常时执行|
+|最终通知|@After|用于配置最终通知. 无论增强方法执行是否有异常都会执行|
+
+## 3. 切点表达式抽取:
+```java
+package anno;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+@Component("myAspect")
+@Aspect // 标注当前类是一个切面
+public class MyAspect {
+    // 配置前置增强
+    @Before("execution(public void anno.Target.save())")
+    public void before() {
+        System.out.println("前置增强...");
+    }
+    @AfterThrowing("MyAspect.myPoint()")
+    public void atferThrow() {
+        System.out.println("异常增强...");
+    }
+
+    // 定义切点表达式
+    @Pointcut("execution(* anno.*.*(..))")
+    public void myPoint(){}
+
+    @After("myPoint()")
+    public void atferPower() {
+        System.out.println("最终增强...");
+    }
+}
 ```

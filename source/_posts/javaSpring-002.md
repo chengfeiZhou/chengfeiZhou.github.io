@@ -1,5 +1,5 @@
 ---
-title: Java spring 入门二
+title: 二、Spring相关配置, 数据源及注解开发
 date: 2021-01-31 18:31:46
 tags:
     - Java

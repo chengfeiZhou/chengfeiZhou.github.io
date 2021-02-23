@@ -1,5 +1,5 @@
 ---
-title: Java spring 入门一
+title: 一、Spring快速入门, 了解配置文件
 date: 2021-01-13 15:54:23
 tags:
     - Java
