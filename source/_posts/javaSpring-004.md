@@ -248,3 +248,68 @@ public class JdbcTemplateCRUD {
 
 }
 ```
+
+# 二、Spring的事务控制:
+
+## 1.编程式事务控制相关对象:
+### 1.1 PlatformTransactionManager: 平台事务管理器
+PlatformTransactionManager接口是Spring的事务管理器, 它里面提供了常用的操作事务的方法:
+|方法|说明|
+|-|-|
+|TransactionStatus getTransaction(TransactionDefination defination)|获取事务的状态信息|
+|void commit(TransactioStatus status)|提交事务|
+|void rollback(TransactionStatus status)|回滚事务|
+
+**注意:**
+> PlatformTransactioManager是接口类型, 不同的Dao层技术则有不同的实现类;
+> 例如:
+> - Dao层技术是jdbc或mybatis时, `org.springframework.jdbc.datasource.DataSourceTransactionManager`;
+> - Dao层技术是hibernta时: `org.springframework.orm.hibernate5.HibernateTransactionManager;`
+
+### 1.2 TransactionDefinition:
+TransactionDefinition是事务的定义信息对象, 里面有如下方法:
+|方法|说明|
+|-|-|
+|int getIsolationLevel()|获取事务的隔离级别|
+|int getPropogationBehavior()|获取事务的传播行为|
+|int getTimeout()|获取超时时间|
+|boolean isReadOnly()|是否只读|
+
+#### 1.2.1 事务的隔离级别:
+设置隔离级别, 可以解决事务并发产生的问题, 如: 脏读, 不可重复读, 虚读(幻读)
+- ISOLATION_DEFAULT: 默认
+- ISOLATION_READ_UNCOMMITTED: 读未提交(不能解决)
+- ISOLATION_READ_COMMITTED: 读已提交(解决*脏读*)
+- ISOLATION_REPEATABLE_READ: 可重复读(解决*不可重复读*)
+- ISOLATION_SERIALIZABLE: 串行化(全能解决, 但性能低, 相当于锁表)
+
+#### 1.2.2 事务的传播行为:
+作用: 解决业务方法在调用业务方法时, 方法之间事务统一性的问题
+
+- **REQUIRED**: 如果当前没有事务, 就新建一个事务, 如果已经存在一个事务中, 加入到这个事务中; 一般的选择(默认值);
+- **SUPPORTS**: 支持当前事务, 如果当前没有事务, 就以非事务方式执行(没有事务);
+- MANDATORY: 使用当前事务, 如果没有事务,就抛出异常;
+- REQUERS_NEW: 新建事务, 如果当前在事务中, 就把当前事务挂起;
+- NOT_SUPPORTED: 以非事务方式执行操作, 如果当前存在事务, 就把当前事务挂起;
+- NEVER: 以非事务方式执行操作, 如果当前存在事务, 抛出异常;
+- NESTED: 如果当前存在事务, 则在嵌套事务内执行; 如果当前没有事务, 则执行REQUIRED类似的操作;
+- 超时时间: 默认值是-1, 没有超时限制; 如果有, 以秒为单位进行设置;
+- 是否只读: 建议查询设置为只读;
+
+## 1.3 TransactionStatus: 事务状态对象:
+TransactionStatus接口提供的是事务具体的运行状态, 方法介绍如下:
+|方法|说明|
+|-|-|
+|boolean hasSavepoint()|是否存储回滚点|
+|boolean isCompleted()|事务是否完成|
+|boolean isNewTransaction()|是否是新事物|
+|boolean isRollbackOnly()|事务是否回滚|
+
+# 2. 基于Xml的声明式事务控制:
+### 2.1 什么是声明式事务控制:
+Spring的声明式事务就是**采用声明的方式来处理事务**
+#### 声明式事务处理的作用:
+- 事务管理不侵入开发的组件; 
+- 在不需要事务的时候, 只要在配置文件上修改一下, 即可移去事务管服务;
+
+**Spring声明式事务控制底层就是AOP**
