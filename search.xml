@@ -996,7 +996,7 @@
       </tags>
   </entry>
   <entry>
-    <title>python标准库01</title>
+    <title>python标准库-内置函数</title>
     <url>/2021/01/04/python_001_Index/</url>
     <content><![CDATA[<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述:"></a>一、概述:</h1><p>本项目用来记录学习过程中的代码:<a href="https://github.com/chengfeiZhou/PythonLearn">https://github.com/chengfeiZhou/PythonLearn</a><br>python官方包索引:<a href="https://pypi.org/">https://pypi.org/</a></p>
 <h1 id="二、内置函数"><a href="#二、内置函数" class="headerlink" title="二、内置函数:"></a>二、内置函数:</h1><h2 id="A"><a href="#A" class="headerlink" title="A:"></a>A:</h2><h3 id="1-abs-x-绝对值"><a href="#1-abs-x-绝对值" class="headerlink" title="1. abs(x): 绝对值:"></a>1. abs(x): 绝对值:</h3><p>返回一个数的绝对值. 参数可以是整数、浮点数或任何实现了<a href="https://docs.python.org/zh-cn/3/reference/datamodel.html#object.__abs__"><code>__abs__()</code></a>的对象. 如果参数是一个复数, 则返回它的模</p>
@@ -1389,6 +1389,8 @@
       </categories>
       <tags>
         <tag>python</tag>
+        <tag>标准库</tag>
+        <tag>内置函数</tag>
       </tags>
   </entry>
   <entry>
@@ -1456,6 +1458,25 @@
       <tags>
         <tag>Java</tag>
         <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python标准库-时间类型</title>
+    <url>/2021/03/02/python-002-time/</url>
+    <content><![CDATA[<h1 id="一、datetime-处理日期和时间的类"><a href="#一、datetime-处理日期和时间的类" class="headerlink" title="一、datetime:处理日期和时间的类:"></a>一、datetime:处理日期和时间的类:</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述:"></a>1. 概述:</h2><p>源码:<a href="https://github.com/python/cpython/tree/3.9/Lib/datetime.py">https://github.com/python/cpython/tree/3.9/Lib/datetime.py</a></p>
+<p>在支持日期时间数学运算的同时，实现的关注点更着重于如何能够更有效地解析其属性用于格式化输出和数据操作;</p>
+<h2 id="2-感知型对象和简单型对象"><a href="#2-感知型对象和简单型对象" class="headerlink" title="2. 感知型对象和简单型对象:"></a>2. 感知型对象和简单型对象:</h2><p>感知型对象就能相对于其他感知型对象来精确定位自身时间点。 感知型对象是用来表示一个没有解释空间的固定时间点;<br>简单型 对象没有包含足够多的信息来无歧义地相对于其他 date/time 对象来定位自身时间点;<br>对于要求感知型对象的应用，<code>datetime</code> 和 <code>time</code> 对象具有一个可选的时区信息属性 <code>tzinfo</code>，它可被设为抽象类 <code>tzinfo</code> 的子类的一个实例。 这些 <code>tzinfo</code> 对象会捕获与 UTC 时间的差值、时区名称以及夏令时是否生效等信息;</p>
+<h2 id="3-常量"><a href="#3-常量" class="headerlink" title="3. 常量:"></a>3. 常量:</h2><p><code>datetime.MINYEAR</code>: <code>date</code> 或者 <code>datetime</code> 对象允许的最小年份。 常量 <code>MINYEAR</code> 是 1 ;<br><code>datetime.MAXYEAR</code>: <code>date</code> 或 <code>datetime</code> 对象允许最大的年份。常量 <code>MAXYEAR</code> 是 <code>9999</code>;</p>
+]]></content>
+      <categories>
+        <category>python</category>
+        <category>标准库</category>
+        <category>时间类型</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>标准库</tag>
+        <tag>时间类型</tag>
       </tags>
   </entry>
 </search>

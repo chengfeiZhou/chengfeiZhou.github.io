@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    Java学习003之方法 |  成飞的Blog
+    python标准库-时间类型 |  成飞的Blog
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -49,7 +49,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-java_003_Function"
+  id="post-python-002-time"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -60,18 +60,18 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  Java学习003之方法
+  python标准库-时间类型
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2021/01/10/java_003_Function/" class="article-date">
-  <time datetime="2021-01-10T13:34:17.000Z" itemprop="datePublished">2021-01-10</time>
+      <a href="/2021/03/02/python-002-time/" class="article-date">
+  <time datetime="2021-03-02T03:54:09.000Z" itemprop="datePublished">2021-03-02</time>
 </a> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Java/">Java</a> / <a class="article-category-link" href="/categories/Java/%E5%9F%BA%E7%A1%80%E7%8F%AD/">基础班</a>
+    <a class="article-category-link" href="/categories/python/">python</a> / <a class="article-category-link" href="/categories/python/%E6%A0%87%E5%87%86%E5%BA%93/">标准库</a> / <a class="article-category-link" href="/categories/python/%E6%A0%87%E5%87%86%E5%BA%93/%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B/">时间类型</a>
   </div>
   
 <div class="word_count">
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">43</span>
+            <span class="post-count">297</span>
         </span>
     </span>
 
@@ -103,7 +103,11 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="一、方法入门："><a href="#一、方法入门：" class="headerlink" title="一、方法入门："></a>一、方法入门：</h1><h2 id="1-方法的定义："><a href="#1-方法的定义：" class="headerlink" title="1. 方法的定义："></a>1. 方法的定义：</h2><h3 id="1-1-定义格式："><a href="#1-1-定义格式：" class="headerlink" title="1.1 定义格式："></a>1.1 定义格式：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">修饰符 返回值类型 方法名(参数列表) &#123;</span><br><span class="line">    功能代码;</span><br><span class="line">    <span class="keyword">return</span> 返回值;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 
+  <h1 id="一、datetime-处理日期和时间的类"><a href="#一、datetime-处理日期和时间的类" class="headerlink" title="一、datetime:处理日期和时间的类:"></a>一、datetime:处理日期和时间的类:</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述:"></a>1. 概述:</h2><p>源码:<a target="_blank" rel="noopener" href="https://github.com/python/cpython/tree/3.9/Lib/datetime.py">https://github.com/python/cpython/tree/3.9/Lib/datetime.py</a></p>
+<p>在支持日期时间数学运算的同时，实现的关注点更着重于如何能够更有效地解析其属性用于格式化输出和数据操作;</p>
+<h2 id="2-感知型对象和简单型对象"><a href="#2-感知型对象和简单型对象" class="headerlink" title="2. 感知型对象和简单型对象:"></a>2. 感知型对象和简单型对象:</h2><p>感知型对象就能相对于其他感知型对象来精确定位自身时间点。 感知型对象是用来表示一个没有解释空间的固定时间点;<br>简单型 对象没有包含足够多的信息来无歧义地相对于其他 date/time 对象来定位自身时间点;<br>对于要求感知型对象的应用，<code>datetime</code> 和 <code>time</code> 对象具有一个可选的时区信息属性 <code>tzinfo</code>，它可被设为抽象类 <code>tzinfo</code> 的子类的一个实例。 这些 <code>tzinfo</code> 对象会捕获与 UTC 时间的差值、时区名称以及夏令时是否生效等信息;</p>
+<h2 id="3-常量"><a href="#3-常量" class="headerlink" title="3. 常量:"></a>3. 常量:</h2><p><code>datetime.MINYEAR</code>: <code>date</code> 或者 <code>datetime</code> 对象允许的最小年份。 常量 <code>MINYEAR</code> 是 1 ;<br><code>datetime.MAXYEAR</code>: <code>date</code> 或 <code>datetime</code> 对象允许最大的年份。常量 <code>MAXYEAR</code> 是 <code>9999</code>;</p>
+ 
       <!-- reward -->
       
       <div id="reword-out">
@@ -173,12 +177,12 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2021/01/10/java_003_Function/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2021/03/02/python-002-time/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>  
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9F%BA%E7%A1%80%E7%8F%AD/" rel="tag">基础班</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B/" rel="tag">时间类型</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A0%87%E5%87%86%E5%BA%93/" rel="tag">标准库</a></li></ul>
 
     </footer>
   </div>
@@ -186,19 +190,10 @@
    
   <nav class="article-nav">
     
-      <a href="/2021/01/13/javaSpring-001/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            一、Spring快速入门, 了解配置文件
-          
-        </div>
-      </a>
     
-    
-      <a href="/2021/01/10/java_002_Operation/" class="article-nav-link">
+      <a href="/2021/02/23/javaSpring-004/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">Java学习002之运算符</div>
+        <div class="article-nav-title">四、jdbcTemplate基本使用、Spring实物控制</div>
       </a>
     
   </nav>
