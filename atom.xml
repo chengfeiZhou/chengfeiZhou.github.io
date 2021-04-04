@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-04-04T08:18:01.315Z</updated>
+  <updated>2021-04-04T08:49:16.650Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>服务器--ssh 配置与使用</title>
+    <link href="http://example.com/2021/04/02/sshConfig/"/>
+    <id>http://example.com/2021/04/02/sshConfig/</id>
+    <published>2021-04-02T03:31:58.000Z</published>
+    <updated>2021-04-04T08:49:16.650Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;一、目的&quot;&gt;&lt;a href=&quot;#一、目的&quot; class=&quot;headerlink&quot; title=&quot;一、目的:&quot;&gt;&lt;/a&gt;一、目的:&lt;/h1&gt;&lt;p&gt;每次登陆ssh都需要手动输一遍用户名密码, 太麻烦了!!&lt;/p&gt;
+&lt;h1 id=&quot;二、步骤：&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="服务器" scheme="http://example.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    <category term="linux" scheme="http://example.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/linux/"/>
+    
+    <category term="ssh" scheme="http://example.com/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/linux/ssh/"/>
+    
+    
+    <category term="服务器" scheme="http://example.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    <category term="linux" scheme="http://example.com/tags/linux/"/>
+    
+    <category term="ssh" scheme="http://example.com/tags/ssh/"/>
+    
+  </entry>
   
   <entry>
     <title>三、Golang之Go并发编程</title>

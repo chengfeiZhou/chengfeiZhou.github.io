@@ -1555,4 +1555,38 @@
         <tag>Golang高级 - 并发编程</tag>
       </tags>
   </entry>
+  <entry>
+    <title>服务器--ssh 配置与使用</title>
+    <url>/2021/04/02/sshConfig/</url>
+    <content><![CDATA[<h1 id="一、目的"><a href="#一、目的" class="headerlink" title="一、目的:"></a>一、目的:</h1><p>每次登陆ssh都需要手动输一遍用户名密码, 太麻烦了!!</p>
+<h1 id="二、步骤："><a href="#二、步骤：" class="headerlink" title="二、步骤："></a>二、步骤：</h1><h2 id="1-客户端："><a href="#1-客户端：" class="headerlink" title="1. 客户端："></a>1. 客户端：</h2><ul>
+<li>生成ssh秘钥：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+ps: 回车即可, 使用默认配置</li>
+<li>创建config文件<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.ssh</span><br><span class="line">touch config</span><br><span class="line">ls</span><br></pre></td></tr></table></figure>
+此时该目录下至少存在: <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">config: 文件, 用来配置ssh</span><br><span class="line">id_rsa: 私钥</span><br><span class="line">id_rsa.pub: 公钥</span><br><span class="line">known_hosts: 登陆过的主机记录</span><br></pre></td></tr></table></figure>
+ps:公私钥原理(对称加密)自行百度</li>
+<li>编辑config文件:<br>格式如下:<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Host: 别名</span><br><span class="line">    HostName: IP</span><br><span class="line">    Port: 端口</span><br><span class="line">    User: 用户名</span><br><span class="line">    IdentityFile: 自己ID私钥</span><br></pre></td></tr></table></figure>
+示例:<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Host nas</span><br><span class="line">    HostName 192.168.1.109</span><br><span class="line">    User chengfei</span><br><span class="line">    Port 22</span><br><span class="line">    IdentityFile ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<h2 id="2-配置服务器"><a href="#2-配置服务器" class="headerlink" title="2. 配置服务器:"></a>2. 配置服务器:</h2></li>
+<li>添加认证文件:<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.ssh </span><br></pre></td></tr></table></figure>
+把客户端的公钥(<code>id_rsa.pub</code>)加入到<code>authorized_keys</code>文件中, 没有这个文件的话需要自己创建;</li>
+</ul>
+<h2 id="3-测试"><a href="#3-测试" class="headerlink" title="3. 测试:"></a>3. 测试:</h2><p>在客户端使用 <code>ssh 别名</code>就可以快速登陆了<br><img src="/images/sshConfig/01_sshTest.png"></p>
+<h2 id="4-小技巧"><a href="#4-小技巧" class="headerlink" title="4. 小技巧:"></a>4. 小技巧:</h2><ul>
+<li>客户端配置IdentityFile的私钥是可配置, 不一定要使用本机的私钥; 而且不懂主机可以使用不同的私钥, 虽然这样的方法并不推荐;</li>
+<li>参考: <a href="https://linuxize.com/post/using-the-ssh-config-file/">https://linuxize.com/post/using-the-ssh-config-file/</a></li>
+<li>参考: <a href="https://www.ssh.com/ssh/config/">https://www.ssh.com/ssh/config/</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>服务器</category>
+        <category>linux</category>
+        <category>ssh</category>
+      </categories>
+      <tags>
+        <tag>服务器</tag>
+        <tag>linux</tag>
+        <tag>ssh</tag>
+      </tags>
+  </entry>
 </search>
