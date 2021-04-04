@@ -1,8 +1,10 @@
 ---
-title: python标准库01
+title: python标准库-内置函数
 date: 2021-01-04 16:46:29
 tags: 
     - python
+    - 标准库
+    - 内置函数
 categories: 
     - python
     - 标准库
