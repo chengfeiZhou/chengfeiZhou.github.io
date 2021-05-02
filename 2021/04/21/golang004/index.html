@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    四、Golang之网络编程 |  成飞的Blog
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+  <script data-ad-client="ca-pub-2999262624685338" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<link rel="alternate" href="/atom.xml" title="成飞的Blog" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-golang004"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  四、Golang之网络编程
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/04/21/golang004/" class="article-date">
+  <time datetime="2021-04-21T14:06:14.000Z" itemprop="datePublished">2021-04-21</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Golang%E9%AB%98%E7%BA%A7/">Golang高级</a> / <a class="article-category-link" href="/categories/Golang%E9%AB%98%E7%BA%A7/Go%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">Go网络编程</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">10.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">44 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="一、网络协议"><a href="#一、网络协议" class="headerlink" title="一、网络协议:"></a>一、网络协议:</h1><h2 id="1-典型协议"><a href="#1-典型协议" class="headerlink" title="1. 典型协议:"></a>1. 典型协议:</h2><ul>
+<li>传输层: 常见协议有<strong>TCP/UDP</strong>协议;</li>
+<li>应用层: 常见的协议有<strong>HTTP协议，FTP协议</strong>;</li>
+<li>网络层: 常见协议有<strong>IP协议、ICMP协议、IGMP协议</strong>;</li>
+<li>网络接口层: 常见协议有<strong>ARP协议、RARP协议</strong>;</li>
+<li>TCP传输控制协议(Transmission Control Protocol)是一种面向连接的、可靠的、基于字节流的传输层通信协议;</li>
+<li>UDP用户数据报协议(User Datagram Protocol)是OSI参考模型中一种无连接的传输层协议, 提供面向事务的简单不可靠信息传送服务;</li>
+<li>HTTP超文本传输协议(Hyper Text Transfer Protocol)是互联网上应用最为广泛的一种网络协议;</li>
+<li>FTP文件传输协议(File Transfer Protocol)</li>
+<li>IP协议是因特网互联协议(Internet Protocol)</li>
+<li>ICMP协议是Internet控制报文协议(Internet Control Message Protocol): 它是TCP/IP协议族的一个子协议, 用于在IP主机、路由器之间传递控制消息;</li>
+<li>IGMP协议是 Internet 组管理协议(Internet Group Management Protocol), 是因特网协议家族中的一个组播协议; 该协议运行在主机和组播路由器之间; </li>
+<li>ARP协议是正向地址解析协议(Address Resolution Protocol) 通过已知的IP, 寻找对应主机的MAC地址;</li>
+<li>RARP是反向地址转换协议, 通过MAC地址确定IP地址;</li>
+</ul>
+<h2 id="2-分层模型"><a href="#2-分层模型" class="headerlink" title="2.分层模型:"></a>2.分层模型:</h2><h3 id="2-1-网络分层架构"><a href="#2-1-网络分层架构" class="headerlink" title="2.1 网络分层架构:"></a>2.1 网络分层架构:</h3><p>为了减少协议设计的复杂性, 大多数网络模型均采用分层的方式来组织; 每一层都有自己的功能, 就像建筑物一样, 每一层都靠下一层支持; <strong>每一层利用下一层提供的服务来为上一层提供服务, 本层服务的实现细节对上层屏蔽</strong>;</p>
+<p><img src="/images/golang/017_net_osi.png"></p>
+<p>业内普遍的分层方式有两种: <strong>OSI七层模型</strong> 和 <strong>TCP/IP四层模型</strong>, 可以通过背诵两个口诀来快速记忆：</p>
+<ul>
+<li><p>OSI七层模型: 物、数、网、传、会、表、应;</p>
+</li>
+<li><p>TCP/IP四层模型: 链、网、传、应;</p>
+</li>
+<li><p>物理层: 主要定义物理设备标准, 如网线的接口类型、光纤的接口类型、各种传输介质的传输速率等; 它的主要作用是传输比特流(就是由1、0转化为电流强弱来进行传输, 到达目的地后再转化为1、0, 也就是我们常说的数模转换与模数转换); 这一层的数据叫做<strong>比特</strong>;</p>
+</li>
+<li><p>数据链路层: 定义了如何让格式化数据以<strong>帧</strong>为单位进行传输, 以及如何让控制对物理介质的访问; 这一层通常还提供错误检测和纠正, 以确保数据的可靠传输; 如：串口通信中使用到的115200、8、N、1;</p>
+</li>
+<li><p>网络层: 在位于不同地理位置的网络中的两个主机系统之间提供连接和路径选择; Internet的发展使得从世界各站点访问信息的用户数大大增加, 而网络层正是管理这种连接的层;</p>
+</li>
+<li><p>传输层: 定义了一些传输数据的协议和端口号(WWW端口80等), 如: TCP(传输控制协议, 传输效率低, 可靠性强, 用于传输可靠性要求高, 数据量大的数据); UDP(用户数据报协议, 与TCP特性恰恰相反, 用于传输可靠性要求不高, 数据量小的数据, 如QQ聊天数据就是通过这种方式传输的);  主要是将从下层接收的数据进行分段和传输, 到达目的地址后再进行重组; 常常把这一层数据叫做<strong>段</strong>;</p>
+</li>
+<li><p>会话层: 通过传输层(端口号: 传输端口与接收端口)建立数据传输的通路; 主要在系统之间发起会话或者接受会话请求(设备之间需要互相认识可以是IP也可以是MAC地址或者是主机名)。</p>
+</li>
+<li><p>表示层: 可确保一个系统的应用层所发送的信息可以被另一个系统的应用层读取; 例如: PC程序与另一台计算机进行通信,其中一台计算机使用扩展二一十进制交换码(EBCDIC)，而另一台则使用美国信息交换标准码（ASCII）来表示相同的字符; 如有必要, 表示层会通过使用一种通用格式来实现多种数据格式之间的转换; </p>
+</li>
+<li><p>应用层: 是最靠近用户的OSI层; 这一层为用户的应用程序(例如电子邮件、文件传输和终端仿真)提供网络服务;</p>
+</li>
+</ul>
+<h3 id="2-2-层与协议"><a href="#2-2-层与协议" class="headerlink" title="2.2 层与协议:"></a>2.2 层与协议:</h3><p>每一层都是为了完成一种功能, 为了实现这些功能, 就需要大家都遵守共同的规则; 大家都遵守这规则, 就叫做<strong>协议(protocol)</strong>;<br>网络的每一层, 都定义了很多协议; 这些协议的总称, 叫<strong>TCP/IP协议</strong>; TCP/IP协议是一个大家族, 不仅仅只有TCP和IP协议, 它还包括其它的协议, 如下图:<br><img src="/images/golang/018_xieyi.png"></p>
+<p>协议功能:<br><img src="/images/golang/019_xieyigongneng.png"></p>
+<ul>
+<li>链路层:<ul>
+<li>以太网规定, 连入网络的所有设备, 都必须具有<strong>网卡</strong>接口; 数据包必须是从一块网卡, 传送到另一块网卡; 通过网卡能够使不同的计算机之间连接, 从而完成数据通信等功能; 网卡的地址 —— <strong>MAC 地址</strong>, 就是数据包的物理发送地址和物理接收地址;</li>
+</ul>
+</li>
+<li>网络层:<ul>
+<li>网络层的作用是引进一套新的地址, 使得能够区分不同的计算机<strong>是否属于同一个子网络</strong>; 这套地址就叫做<strong>网络地址(IP地址)</strong>;</li>
+<li>网络地址帮助我们确定计算机所在的子网络, <strong>MAC 地址</strong>则将数据包送到该子网络中的目标网卡; 网络层协议包含的主要信息是<strong>源IP</strong>和<strong>目的IP</strong>;</li>
+<li>于是, <strong>网络层</strong>出现以后, 每台计算机有了两种地址: 一种是 <strong>MAC 地址</strong>, 另一种是<strong>IP地址</strong>; 两种地址之间没有任何联系, MAC 地址是绑定在网卡上的，网络地址则是管理员分配的，它们只是随机组合在一起。</li>
+<li>网络地址帮助我们确定计算机所在的子网络，MAC 地址则将数据包送到该子网络中的目标网卡。因此，从逻辑上可以推断，必定是先处理网络地址，然后再处理 MAC 地址。</li>
+</ul>
+</li>
+<li>传输层:<ul>
+<li>当我们一边聊QQ，一边聊微信，当一个数据包从互联网上发来的时候，我们怎么知道，它是来自QQ的内容，还是来自微信的内容？</li>
+<li>也就是说，我们还需要一个参数，表示这个数据包到底供哪个程序（进程）使用。这个参数就叫做“端口”（port），它其实是每一个使用网卡的程序的编号。每个数据包都发到主机的特定端口，所以不同的程序就能取到自己所需要的数据。</li>
+<li>端口特点：<ul>
+<li>对于同一个端口，在不同系统中对应着不同的进程</li>
+<li>对于同一个系统，一个端口只能被一个进程拥有</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>应用层:<ul>
+<li>应用程序收到“传输层”的数据，接下来就要进行解读。由于互联网是开放架构，数据来源五花八门，必须事先规定好格式，否则根本无法解读。“应用层”的作用，就是规定应用程序的数据格式</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-3-通信过程"><a href="#2-3-通信过程" class="headerlink" title="2.3 通信过程"></a>2.3 通信过程</h3><p>两台计算机通过TCP/IP协议通讯的过程如下所示:<br><img src="/images/golang/020_tongxinguocheng.png"></p>
+<h3 id="2-4-总结通信过程："><a href="#2-4-总结通信过程：" class="headerlink" title="2.4 总结通信过程："></a>2.4 总结通信过程：</h3><ul>
+<li>mac地址(不需要用户指定) –&gt; (ARP 协议)Ip ——&gt; mac</li>
+<li>IP 地址(需要用户指定) ——&gt; 确定主机</li>
+<li>port 端口号(需要用户指定)    ——&gt; 确定程序<ul>
+<li>不能使用系统占用的默认端口; 建议使用5000+ 端口;</li>
+<li>65535为端口上限;</li>
+</ul>
+</li>
+</ul>
+<h1 id="二、Socket编程"><a href="#二、Socket编程" class="headerlink" title="二、Socket编程:"></a>二、Socket编程:</h1><h2 id="1-什么是Socket"><a href="#1-什么是Socket" class="headerlink" title="1.什么是Socket:"></a>1.什么是Socket:</h2><p>Socket, 英文含义是<strong>插座、插孔</strong>, 一般称之为<strong>套接字</strong>, 用于描述IP地址和端口; 可以实现不同程序间的数据通信;<br>Socket起源于Unix, 而Unix基本哲学之一就是“一切皆文件”, 都可以用“打开open –&gt; 读写write/read –&gt; 关闭close”模式来操作;<br>Socket就是该模式的一个实现, 网络的Socket数据传输是一种特殊的I/O, Socket也是一种文件描述符; Socket也具有一个类似于打开文件的函数调用: <code>Socket()</code>, 该函数返回一个整型的Socket描述符, 随后的连接建立、数据传输等操作都是通过该Socket实现的;</p>
+<p><img src="/images/golang/021_socket.png"></p>
+<p>在TCP/IP协议中, “IP地址+TCP或UDP端口号”唯一标识网络通讯中的一个进程; “IP地址+端口号”就对应一个socket; 欲建立连接的两个进程各自有一个socket来标识, 那么这两个socket组成的socket pair就唯一标识一个连接; 因此可以用Socket来描述网络连接的一对一关系;</p>
+<ul>
+<li>常用的Socket类型有两种: <strong>流式Socket(SOCK_STREAM)和数据报式Socket(SOCK_DGRAM)</strong>; <ul>
+<li>流式是一种面向连接的Socket, 针对于面向连接的TCP服务应用;</li>
+<li>数据报式Socket是一种无连接的Socket, 对应于无连接的UDP服务应用; </li>
+</ul>
+</li>
+</ul>
+<h2 id="2-网络应用程序设计模式"><a href="#2-网络应用程序设计模式" class="headerlink" title="2. 网络应用程序设计模式:"></a>2. 网络应用程序设计模式:</h2><h3 id="2-1-模式"><a href="#2-1-模式" class="headerlink" title="2.1 模式:"></a>2.1 模式:</h3><ul>
+<li><p>C/S模式:</p>
+<ul>
+<li>传统的网络应用设计模式, 客户机(client)/服务器(server)模式; 需要在通讯两端各自部署客户机和服务器来完成数据通信;</li>
+</ul>
+</li>
+<li><p>B/S模式:</p>
+<ul>
+<li>浏览器(Browser)/服务器(Server)模式; 只需在一端部署服务器, 而另外一端使用每台PC都默认配置的浏览器即可完成数据的传输;</li>
+</ul>
+</li>
+<li><p>优缺点:</p>
+<ul>
+<li>对于C/S模式来说, 其优点明显; <ul>
+<li>客户端位于目标主机上可以保证性能, 将数据缓存至客户端本地, 从而<strong>提高数据传输效率</strong>;</li>
+<li>一般来说客户端和服务器程序由一个开发团队创作, 所以他们之间所<strong>采用的协议相对灵活</strong>; </li>
+<li>可以在标准协议的基础上根据需求裁剪及定制; 例如, 腾讯所采用的通信协议,即为ftp协议的修改剪裁版;</li>
+</ul>
+</li>
+<li>因此, 传统的网络应用程序及较大型的网络应用程序都首选C/S模式进行开发; 如, 知名的网络游戏魔兽世界; 3D画面, 数据量庞大, 使用C/S模式可以提前在本地进行大量数据的缓存处理, 从而提高观感;</li>
+<li>C/S模式的缺点也较突出: <ul>
+<li>由于客户端和服务器都需要有一个开发团队来完成开发; </li>
+<li><strong>工作量将成倍提升</strong>, 开发周期较长; </li>
+<li>从用户角度出发, 需要将客户端安插至用户主机上, 对用户主机的<strong>安全性构成威胁</strong>; </li>
+<li>这也是很多用户不愿使用C/S模式应用程序的重要原因;</li>
+</ul>
+</li>
+<li>B/S模式相比C/S模式而言, 由于它没有独立的客户端, 使用标准浏览器作为客户端, 其工作<strong>开发量较小</strong>; 只需开发服务器端即可; 另外由于其采用浏览器显示数据, 因此移植性非常好, <strong>不受平台限制</strong>; 如早期的偷菜游戏, 在各个平台上都可以完美运行;</li>
+<li>B/S模式的缺点也较明显:<ul>
+<li>由于使用第三方浏览器, 因此<strong>网络应用支持受限</strong>;</li>
+<li>另外, 没有客户端放到对方主机上, <strong>缓存数据不尽如人意</strong>, 从而传输数据量受到限制; 应用的观感大打折扣; </li>
+<li>第三, 必须与浏览器一样, 采用标准http协议进行通信, <strong>协议选择不灵活</strong>;</li>
+</ul>
+</li>
+<li>因此在开发过程中, 模式的选择由上述各自的特点决定; 根据实际需求选择应用程序设计模式;</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-TCP的C-S架构"><a href="#2-2-TCP的C-S架构" class="headerlink" title="2.2 TCP的C/S架构:"></a>2.2 TCP的C/S架构:</h3><p><img src="/images/golang/022_tcp_cs.png"></p>
+<h3 id="2-3-简单的C-S模型通信"><a href="#2-3-简单的C-S模型通信" class="headerlink" title="2.3 简单的C/S模型通信:"></a>2.3 简单的C/S模型通信:</h3><h4 id="a-Server端"><a href="#a-Server端" class="headerlink" title="a.Server端:"></a>a.Server端:</h4><p>Listen函数:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Listen</span><span class="params">(network, address <span class="keyword">string</span>)</span> <span class="params">(Listener, error)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>network: 选用的协议: TCP、UDP, 如：“tcp”或 “udp”;</p>
+</li>
+<li><p>address: IP地址+端口号,如: “127.0.0.1:8000”或 “:8000”;<br>Listener 接口：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Listener <span class="keyword">interface</span> &#123;</span><br><span class="line">			Accept() (Conn, error)</span><br><span class="line">			Close() error</span><br><span class="line">			Addr() Addr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Conn 接口:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Conn <span class="keyword">interface</span> &#123;</span><br><span class="line">	Read(b []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">	Write(b []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">	Close() error</span><br><span class="line">	LocalAddr() Addr</span><br><span class="line">	RemoteAddr() Addr</span><br><span class="line">	SetDeadline(t time.Time) error</span><br><span class="line">	SetReadDeadline(t time.Time) error</span><br><span class="line">	SetWriteDeadline(t time.Time) error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参看 <a target="_blank" rel="noopener" href="https://studygolang.com/pkgdoc">https://studygolang.com/pkgdoc</a> 中文帮助文档中的demo:</p>
+</li>
+<li><p>TCP-CS服务器:</p>
+<ul>
+<li>创建监听<code>socket</code>: <code>listener := net.Listen(&quot;TCP&quot;, &quot;IP+port&quot;)</code> =&gt; IP+port –服务器自己的IP 和 port;</li>
+<li>启动监听 <code>conn := listener.Accept()</code>: <code>conn</code>用于 通信的 <code>socket</code>;</li>
+<li><code>conn.Read()</code>;</li>
+<li>处理使用 数据;</li>
+<li>返回数据: <code>conn.Write()</code>;</li>
+<li>关闭<code>listener</code>、<code>conn</code>;</li>
+</ul>
+</li>
+</ul>
+<p>TCP_Server.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 指定服务器</span></span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:9000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;net.Listen err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;服务器等待客户端建立连接...&quot;</span>)</span><br><span class="line">	<span class="comment">// 阻塞监听客户端请求</span></span><br><span class="line">	conn, err := listener.Accept()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;listener.Accept err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">	n, err := conn.Read(buf)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;conn.Read err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 打印数据</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;服务器读取到: &quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 回复数据</span></span><br><span class="line">	<span class="keyword">if</span> _, err := conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;server is ok&quot;</span>)); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;conn.Write err: &quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在整个通信过程中, 服务器端有两个socket参与进来, 但用于通信的只有 conn 这个socket; 它是由 listener创建的; 隶属于服务器端<br><img src="/images/golang/023_tcp_cs.png"></p>
+<h4 id="b-Client-端"><a href="#b-Client-端" class="headerlink" title="b.Client 端:"></a>b.Client 端:</h4><p>Dial函数:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Dial</span><span class="params">(network, address <span class="keyword">string</span>)</span> <span class="params">(Conn, error)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>network: 选用的协议：TCP、UDP, 如：“tcp”或 “udp”;</li>
+<li>address: 服务器IP地址+端口号, 如: “121.36.108.11:8000”或 “<a href="http://www.itcast.cn:8000”">www.itcast.cn:8000”</a>;<br>Conn 接口:<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Conn <span class="keyword">interface</span> &#123;</span><br><span class="line">	Read(b []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">	Write(b []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">	Close() error</span><br><span class="line">	LocalAddr() Addr</span><br><span class="line">	RemoteAddr() Addr</span><br><span class="line">	SetDeadline(t time.Time) error</span><br><span class="line">	SetReadDeadline(t time.Time) error</span><br><span class="line">	SetWriteDeadline(t time.Time) error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>TCP-CS客户端: <ul>
+<li><code>conn, err := net.Dial(&quot;TCP&quot;, 服务器的IP+port)</code>;</li>
+<li>写数据给 服务器 <code>conn.Write()</code></li>
+<li>读取服务器回发的 数据 <code>conn.Read()</code></li>
+<li><code>conn.Close()</code></li>
+</ul>
+</li>
+</ul>
+<p>TCP_Client.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 主动连接请求</span></span><br><span class="line">	conn, err := net.Dial(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;127.0.0.1:9000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;net.Dial err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 发送数据</span></span><br><span class="line">	_, err = conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;R U ok??&quot;</span>))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;onn.Write err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 接收数据</span></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">	n, err := conn.Read(buf)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;conn.Read err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 打印数据</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;客户端读取到: &quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-并发的C-S模型通信"><a href="#2-4-并发的C-S模型通信" class="headerlink" title="2.4 并发的C/S模型通信:"></a>2.4 并发的C/S模型通信:</h3><h4 id="a-并发server"><a href="#a-并发server" class="headerlink" title="a.并发server:"></a>a.并发server:</h4><p>现在已经完成了客户端与服务端的通信, 但是服务端只能接收一个用户发送过来的数据, 怎样接收多个客户端发送过来的数据, 实现一个高效的并发服务器呢？<br><code>Accept()</code>函数的作用是等待客户端的链接, 如果客户端没有链接, 该方法会阻塞; 如果有客户端链接, 那么该方法返回一个Socket负责与客户端进行通信; 所以, 每来一个客户端, 该方法就应该返回一个Socket与其通信, 因此, 可以使用一个死循环, 将<code>Accept()</code>调用过程包裹起来;<br>ps:</p>
+<ul>
+<li><p>实现并发处理多个客户端数据的服务器, 就需要<strong>针对每一个客户端连接, 单独产生一个Socket, 并创建一个单独的goroutine与之完成通信</strong>;</p>
+</li>
+<li><p>TCP-CS并发服务器:</p>
+<ul>
+<li>创建 监听套接字 <code>listener := net.Listen(&quot;tcp&quot;， 服务器的IP+port)</code></li>
+<li><code>defer listener.Close()</code></li>
+<li><code>for</code> 循环 阻塞监听 客户端连接事件: <code>conn := listener.Accept()</code></li>
+<li>创建 go程 对应每一个 客户端进行数据通信<code>go HandlerConnet()</code></li>
+<li>实现 <code>HandlerConnet(conn net.Conn)</code><ul>
+<li><code>defer conn.Close()</code></li>
+<li>获取成功连接的客户端 <code>Addr</code>: <code>conn.RemoteAddr()</code></li>
+<li>for 循环 读取 客户端发送数据: <code>conn.Read(buf)</code></li>
+<li>处理数据 小 -&gt; 大    <code>strings.ToUpper()</code></li>
+<li>回写转化后的数据: <code>conn.Write(buf[:n])</code> </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>并发Service.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">	<span class="string">&quot;strings&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Handler</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	<span class="comment">// 获取客户端的网络地址</span></span><br><span class="line">	addr := conn.RemoteAddr().String()</span><br><span class="line">	fmt.Println(addr, <span class="string">&quot;connect successful!!!&quot;</span>)</span><br><span class="line"></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		n, err := conn.Read(buf)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;client close!!!&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			fmt.Println(<span class="string">&quot;conn.Read err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 打印数据</span></span><br><span class="line">		fmt.Println(<span class="string">&quot;服务器读取到: &quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 回复数据</span></span><br><span class="line">		<span class="keyword">if</span> _, err := conn.Write([]<span class="keyword">byte</span>(strings.ToUpper(<span class="keyword">string</span>(buf[:n])))); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;conn.Write err: &quot;</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 指定服务器</span></span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:9000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;net.Listen err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;服务器等待客户端建立连接...&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 阻塞监听客户端请求</span></span><br><span class="line">		conn, err := listener.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;listener.Accept err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">go</span> Handler(conn)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="b-并发Client"><a href="#b-并发Client" class="headerlink" title="b.并发Client"></a>b.并发Client</h4><p>客户端不仅需要持续的向服务端发送数据, 同时也要接收从服务端返回的数据; 因此可将发送和接收放到不同的协程中;<br>主协程循环接收服务器回发的数据(该数据应已转换为大写), 并打印至屏幕; 子协程循环从键盘读取用户输入数据, 写给服务器; 读取键盘输入可使用 <code>os.Stdin.Read(str)</code>; 定义切片str, 将读到的数据保存至str中;</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 主动连接请求</span></span><br><span class="line">	conn, err := net.Dial(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;127.0.0.1:9000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;net.Dial err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		str := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			n, err := os.Stdin.Read(str)</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;os.Stdin.Read err:&quot;</span>, err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 将从键盘读到的数据，发送给服务器</span></span><br><span class="line">			_, err = conn.Write(str[:n]) <span class="comment">// 读多少，写多少</span></span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;conn.Write err:&quot;</span>, err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="comment">// 主协程, 接收服务器数据</span></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		n, err := conn.Read(buf)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;conn.Read err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 打印数据</span></span><br><span class="line">		fmt.Println(<span class="string">&quot;客户端读取到: &quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-TCP通信"><a href="#3-TCP通信" class="headerlink" title="3. TCP通信"></a>3. TCP通信</h2><p>下图是一次TCP通讯的时序图; TCP连接建立断开; 包含熟知的<strong>三次握手</strong>和<strong>四次握手</strong>:</p>
+<p><img src="/images/golang/024_sanwosihui.png"></p>
+<h3 id="3-1-三次握手"><a href="#3-1-三次握手" class="headerlink" title="3.1 三次握手:"></a>3.1 三次握手:</h3><p>…</p>
+<h3 id="3-2-四次挥手"><a href="#3-2-四次挥手" class="headerlink" title="3.2 四次挥手:"></a>3.2 四次挥手:</h3><p>…</p>
+<h2 id="4-UDP"><a href="#4-UDP" class="headerlink" title="4. UDP:"></a>4. UDP:</h2><h3 id="4-1-UDP服务器"><a href="#4-1-UDP服务器" class="headerlink" title="4.1 UDP服务器"></a>4.1 UDP服务器</h3><p>由于UDP是<strong>无连接</strong>的, 所以, 服务器端不需要额外创建监听套接字, 只需要指定好IP和port, 然后监听该地址, 等待客户端与之建立连接, 即可通信;</p>
+<ul>
+<li>创建监听地址:<ul>
+<li><code>func ResolveUDPAddr(network, address string) (*UDPAddr, error) </code>;</li>
+</ul>
+</li>
+<li>创建监听连接:<ul>
+<li><code>func ListenUDP(network string, laddr *UDPAddr) (*UDPConn, error) </code>;</li>
+</ul>
+</li>
+<li>接收udp数据:<ul>
+<li><code>func (c *UDPConn) ReadFromUDP(b []byte) (int, *UDPAddr, error)</code>;</li>
+</ul>
+</li>
+<li>写出数据到udp:<ul>
+<li><code>func (c *UDPConn) WriteToUDP(b []byte, addr *UDPAddr) (int, error)</code>;</li>
+</ul>
+</li>
+</ul>
+<p>udp_server.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">&quot;fmt&quot;</span></span><br><span class="line">   <span class="string">&quot;net&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   <span class="comment">//创建监听的地址，并且指定udp协议</span></span><br><span class="line">   udp_addr, err := net.ResolveUDPAddr(<span class="string">&quot;udp&quot;</span>, <span class="string">&quot;127.0.0.1:8002&quot;</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;ResolveUDPAddr err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   conn, err := net.ListenUDP(<span class="string">&quot;udp&quot;</span>, udp_addr)    <span class="comment">//创建监听链接</span></span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;ListenUDP err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">   buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">   n, raddr, err := conn.ReadFromUDP(buf)        <span class="comment">//接收客户端发送过来的数据，填充到切片buf中。</span></span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   fmt.Println(<span class="string">&quot;客户端发送：&quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line"></span><br><span class="line">   _, err = conn.WriteToUDP([]<span class="keyword">byte</span>(<span class="string">&quot;nice to see u in udp&quot;</span>), raddr) <span class="comment">//向客户端发送数据</span></span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;WriteToUDP err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-UDP客户端"><a href="#4-2-UDP客户端" class="headerlink" title="4.2 UDP客户端:"></a>4.2 UDP客户端:</h3><p>UDP_client.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">&quot;net&quot;</span></span><br><span class="line">   <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   conn, err := net.Dial(<span class="string">&quot;udp&quot;</span>, <span class="string">&quot;127.0.0.1:8002&quot;</span>) </span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;net.Dial err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">   conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;Hello! I&#x27;m client in UDP!&quot;</span>))</span><br><span class="line"></span><br><span class="line">   buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">   n, err1 := conn.Read(buf)</span><br><span class="line">   <span class="keyword">if</span> err1 != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   fmt.Println(<span class="string">&quot;服务器发来：&quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-UDP并发"><a href="#4-3-UDP并发" class="headerlink" title="4.3 UDP并发:"></a>4.3 UDP并发:</h3><p>UDP_async_server.go:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">&quot;net&quot;</span></span><br><span class="line">   <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   <span class="comment">// 创建 服务器 UDP 地址结构。指定 IP + port</span></span><br><span class="line">   laddr, err := net.ResolveUDPAddr(<span class="string">&quot;udp&quot;</span>, <span class="string">&quot;127.0.0.1:8003&quot;</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;ResolveUDPAddr err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 监听 客户端连接</span></span><br><span class="line">   conn, err := net.ListenUDP(<span class="string">&quot;udp&quot;</span>, laddr)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;net.ListenUDP err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">   <span class="keyword">for</span> &#123;</span><br><span class="line">      buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">      n, raddr, err := conn.ReadFromUDP(buf)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         fmt.Println(<span class="string">&quot;conn.ReadFromUDP err:&quot;</span>, err)</span><br><span class="line">         <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      fmt.Printf(<span class="string">&quot;接收到客户端[%s]：%s&quot;</span>, raddr, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line"></span><br><span class="line">      conn.WriteToUDP([]<span class="keyword">byte</span>(<span class="string">&quot;I-AM-SERVER&quot;</span>), raddr) <span class="comment">// 简单回写数据给客户端</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>UDP_async_client.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">&quot;net&quot;</span></span><br><span class="line">   <span class="string">&quot;os&quot;</span></span><br><span class="line">   <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   conn, err := net.Dial(<span class="string">&quot;udp&quot;</span>, <span class="string">&quot;127.0.0.1:8003&quot;</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;net.Dial err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">defer</span> conn.Close()</span><br><span class="line">   <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">      str := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">      <span class="keyword">for</span> &#123;</span><br><span class="line">         n, err := os.Stdin.Read(str) <span class="comment">//从键盘读取内容， 放在str</span></span><br><span class="line">         <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            fmt.Println(<span class="string">&quot;os.Stdin. err1 = &quot;</span>, err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">         &#125;</span><br><span class="line">         conn.Write(str[:n])       <span class="comment">// 给服务器发送</span></span><br><span class="line">      &#125;</span><br><span class="line">   &#125;()</span><br><span class="line">   buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">   <span class="keyword">for</span> &#123;</span><br><span class="line">      n, err := conn.Read(buf)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         fmt.Println(<span class="string">&quot;conn.Read err:&quot;</span>, err)</span><br><span class="line">         <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      fmt.Println(<span class="string">&quot;服务器写来：&quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-UDP与TCP的差异"><a href="#5-UDP与TCP的差异" class="headerlink" title="5.UDP与TCP的差异"></a>5.UDP与TCP的差异</h2><table>
+<thead>
+<tr>
+<th>TCP</th>
+<th>UDP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>面向连接</td>
+<td>面向无连接</td>
+</tr>
+<tr>
+<td>要求系统资源较多</td>
+<td>要求系统资源较少</td>
+</tr>
+<tr>
+<td>TCP程序结构较复杂</td>
+<td>UDP程序结构较简单</td>
+</tr>
+<tr>
+<td>使用流式</td>
+<td>使用数据包式</td>
+</tr>
+<tr>
+<td>保证数据准确性</td>
+<td>不保证数据准确性</td>
+</tr>
+<tr>
+<td>保证数据顺序</td>
+<td>不保证数据顺序</td>
+</tr>
+<tr>
+<td>通讯速度较慢</td>
+<td>通讯速度较快</td>
+</tr>
+</tbody></table>
+<h1 id="三、实例-–-文件传输"><a href="#三、实例-–-文件传输" class="headerlink" title="三、实例 – 文件传输:"></a>三、实例 – 文件传输:</h1><h2 id="1-流程简析"><a href="#1-流程简析" class="headerlink" title="1. 流程简析"></a>1. 流程简析</h2><p>借助TCP完成文件的传输, 基本思路如下: </p>
+<ul>
+<li>发送方（客户端）向服务端发送文件名, 服务端保存该文件名;</li>
+<li>接收方（服务端）向客户端返回一个消息ok, 确认文件名保存成功;</li>
+<li>发送方（客户端）收到消息后, 开始向服务端发送文件数据;</li>
+<li>接收方（服务端）读取文件内容, 写入到之前保存好的文件中;</li>
+</ul>
+<p><img src="/images/golang/025_fileserver.png"></p>
+<h2 id="2-获取文件属性"><a href="#2-获取文件属性" class="headerlink" title="2. 获取文件属性:"></a>2. 获取文件属性:</h2><p>借助<code>os</code>包中的<code>stat()</code>函数来获取文件属性信息; 在函数返回的文件属性中包含文件名和文件大小; <code>Stat</code>参数<code>name</code>传入的是文件访问的绝对路径; <code>FileInfo</code>中的<code>Name()</code>函数可以将文件名单独提取出来;</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Stat</span><span class="params">(name <span class="keyword">string</span>)</span> <span class="params">(FileInfo, error)</span></span> </span><br><span class="line"><span class="keyword">type</span> FileInfo <span class="keyword">interface</span> &#123;</span><br><span class="line">   Name() <span class="keyword">string</span>       </span><br><span class="line">   Size() <span class="keyword">int64</span>        </span><br><span class="line">   Mode() FileMode     </span><br><span class="line">   ModTime() time.Time </span><br><span class="line">   IsDir() <span class="keyword">bool</span>        </span><br><span class="line">   Sys() <span class="keyword">interface</span>&#123;&#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>获取文件属性:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	args := os.Args</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(args) != <span class="number">2</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;格式为: run go xxx.go 文件名&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fileName := args[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">	file_info, err := os.Stat(fileName)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;os.Stat err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;文件name为：&quot;</span>, file_info.Name()) <span class="comment">// 得到文件名(不含路径)</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;文件size为：&quot;</span>, file_info.Size()) <span class="comment">// 得到文件大小。单位字节</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-客户端实现"><a href="#3-客户端实现" class="headerlink" title="3. 客户端实现"></a>3. 客户端实现</h2><p>实现流程大致如下: </p>
+<ul>
+<li>提示用户输入文件名, 接收文件名path(含访问路径);</li>
+<li>使用<code>os.Stat()</code>获取文件属性, 得到纯文件名(去除访问路径);</li>
+<li>主动连接服务器, 结束时关闭连接;</li>
+<li>给接收端(服务器)发送文件名<code>conn.Write()</code>;</li>
+<li>读取接收端回发的确认数据<code>conn.Read()</code>;</li>
+<li>判断是否为“ok”; 如果是, 封装函数<code>SendFile()</code> 发送文件内容, 传参path和conn;</li>
+<li>只读Open文件, 结束时<code>Close</code>文件</li>
+<li>循环读文件, 读到<code>EOF</code>终止文件读取;</li>
+<li>将读到的内容原封不动<code>Write</code>给接收端(服务器)</li>
+</ul>
+<p>file_client.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ip_port = <span class="string">&quot;127.0.0.1:8005&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SendFile</span><span class="params">(path <span class="keyword">string</span>, conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 以只读方式打开文件</span></span><br><span class="line">	f, err := os.Open(path)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;os.Open err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> f.Close() <span class="comment">// 发送结束关闭文件</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 循环读取文件，原封不动的写给服务器</span></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		n, err := f.Read(buf) <span class="comment">// 读取文件内容到切片缓冲中</span></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;文件发送完毕&quot;</span>)</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;f.Read err:&quot;</span>, err)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		conn.Write(buf[:n]) <span class="comment">// 原封不动写给服务器</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 提示输入文件名</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;请输入需要传输的文件：&quot;</span>)</span><br><span class="line">	<span class="keyword">var</span> path <span class="keyword">string</span></span><br><span class="line">	fmt.Scan(&amp;path)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 获取文件名   fileInfo.Name()</span></span><br><span class="line">	fileInfo, err := os.Stat(path)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;os.Stat err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 主动连接服务器</span></span><br><span class="line">	conn, err := net.Dial(<span class="string">&quot;tcp&quot;</span>, ip_port)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;net.Dial err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 给接收端，先发送文件名</span></span><br><span class="line">	_, err = conn.Write([]<span class="keyword">byte</span>(fileInfo.Name()))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;conn.Write err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 读取接收端回发确认数据 —— ok</span></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">	n, err := conn.Read(buf)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;conn.Read err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 判断如果是ok，则发送文件内容</span></span><br><span class="line">	<span class="keyword">if</span> <span class="string">&quot;ok&quot;</span> == <span class="keyword">string</span>(buf[:n]) &#123;</span><br><span class="line">		SendFile(path, conn)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-服务端实现"><a href="#4-服务端实现" class="headerlink" title="4.服务端实现:"></a>4.服务端实现:</h2><p>实现流程大致如下: </p>
+<ul>
+<li>创建监听<code>listener</code>, 程序结束时关闭;</li>
+<li>阻塞等待客户端连接, 程序结束时关闭conn;</li>
+<li>读取客户端发送文件名, 保存fileName;</li>
+<li>回发<code>“ok”</code>给客户端做应答</li>
+<li>封装函数 <code>RecvFile</code>接收客户端发送的文件内容, 传参<code>fileName</code> 和 <code>conn</code>;</li>
+<li>按文件名<code>Create</code>文件, 结束时<code>Close</code>;</li>
+<li>循环<code>Read</code>客户端发送的文件内容, 当读到<code>EOF</code>说明文件读取完毕;</li>
+<li>将读到的内容原封不动<code>Write</code>到创建的文件中;</li>
+</ul>
+<p>file_server.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8005</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">RecvFile</span><span class="params">(fileName <span class="keyword">string</span>, conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 创建新文件</span></span><br><span class="line">	f, err := os.Create(fileName)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Create err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> f.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 接收客户端发送文件内容，原封不动写入文件</span></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		n, err := conn.Read(buf)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;文件接收完毕&quot;</span>)</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;Read err:&quot;</span>, err)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		f.Write(buf[:n]) <span class="comment">// 写入文件，读多少写多少</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 创建监听</span></span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8005&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Listen err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 阻塞等待客户端连接</span></span><br><span class="line">	conn, err := listener.Accept()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Accept err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%s已连接...&quot;</span>, conn.RemoteAddr())</span><br><span class="line"></span><br><span class="line">	buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">1024</span>)</span><br><span class="line">	n, err := conn.Read(buf)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;conn.Read err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fileName := <span class="keyword">string</span>(buf[:n]) <span class="comment">// 保存文件名</span></span><br><span class="line">	<span class="comment">// 回复 0k 给发送端</span></span><br><span class="line">	conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;ok&quot;</span>))</span><br><span class="line">	<span class="comment">// 接收文件内容</span></span><br><span class="line">	RecvFile(fileName, conn) <span class="comment">// 封装函数接收文件内容， 传fileName 和 conn</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="四、示例-并发聊天室"><a href="#四、示例-并发聊天室" class="headerlink" title="四、示例 - 并发聊天室:"></a>四、示例 - 并发聊天室:</h1><h2 id="1-模块简述"><a href="#1-模块简述" class="headerlink" title="1 模块简述"></a>1 模块简述</h2><p>整个聊天室程序可简单划分为如下模块, 都分别使用协程来实现: </p>
+<ul>
+<li>主协程(服务器);<ul>
+<li>负责监听、接收用户(客户端)连接请求, 建立通信关系; 同时启动相应的协程处理任务;</li>
+</ul>
+</li>
+<li>处理用户连接协程: <code>HandleConnect</code><ul>
+<li>负责新上线用户的存储, 用户消息读取、发送，用户改名、下线处理及超时处理;</li>
+<li>为了提高并发效率, 同时给一个用户维护多个协程来并行处理上述任务;</li>
+</ul>
+</li>
+<li>用户消息广播协程: <code>Manager</code><ul>
+<li>负责在线用户遍历, 用户消息广播发送; 需要与HandleConnect协程及用户子协程协作完成;</li>
+</ul>
+</li>
+<li>协程间应用数据及通信:<ul>
+<li><code>map</code>: 存储所有登录聊天室的用户信息 =&gt; <code>key</code>: 用户的ip+port; <code>Value</code>: Client结构体;</li>
+<li>Client结构体: 包含成员: 用户名Name, 网络地址Addr(ip+port), 发送消息的通道C(channel);</li>
+<li>通道message:协调并发协程间消息的传递;</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-广播用户上线"><a href="#2-广播用户上线" class="headerlink" title="2. 广播用户上线"></a>2. 广播用户上线</h2><p>首先, 服务器启动, 等待用户建立通信连接; 当有用户连接上来, 将其存储到<code>map</code>中, 这样就维护了一个”在线用户”的列表; 当再有新用户连接上来时, 应向该列表中所有用户进行广播通知, 提示”xxx用户上线”;<br>简单实现手法可以循环读取列表中的用户, 依次向其发送消息通知新用户上线; 但这种方式无疑是一种串行的通信手段, 实现简单, 但执行效率较低;<br>在go语言中, 利用协程轻便、高效、并发性好的特性, 给每个登录用户维护多个协程来进行数据通信, 借助<code>channel</code>不需要使用同步锁, 就可以实现高效的并发通信;<br>下图充分利用<code>goroutine</code>和<code>channel</code>实现了新用户登录, 向所有在线用户进行广播通知:</p>
+<p><img src="/images/golang/026_guangbo.png"><br>分析上图, 主要分为几大模块: </p>
+<ul>
+<li>全局位置定义用户结构体类型 <code>Client</code>, 存储登录用户信息; 成员包含<code>channel</code>、<code>Name</code>、<code>Addr</code>:<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	C <span class="keyword">chan</span> <span class="keyword">string</span></span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Addr <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>定义全局通道message处理消息;</li>
+<li>定义全局<code>map</code> 存储在线用户信息; <code>Key</code>为用户网络地址; <code>Value</code>为用户结构体;</li>
+<li>主协程, 监听客户端连接请求, 当有新的客户端连接, 创建新协程<code>handleConnet</code>处理用户连接;</li>
+<li><code>handleConnet</code>协程, 获取用户网络地址(Ip+port), 创建新用户结构体, 包含成员<code>C、Name、Addr</code>; 新用户的<code>Name</code>和<code>Addr</code>初值都是用户网络地址(Ip+port); 将用户结构体存入map中, 并创建<code>WriteMsgToClient</code>协程, 专门负责给当前用户发送消息; 组织新用户上线广播消息内容; 写入全局通道<code>    message</code>中;</li>
+<li><code>WriteMsgToClient</code>协程, 读取用户结构体<code>C</code>中的数据, 没有则阻塞等待, 有数据写出给登录用户;</li>
+<li><code>Manager</code>协程, 给<code>map</code>分配空间; 循环读取 <code>message</code> 通道中是否有数据; 没有, 阻塞等待; 有则解除阻塞, 将<code>message</code>通道中读到的数据写到用户结构体中的<code>C</code>通道;</li>
+</ul>
+<p>广播用户上线: </p>
+<ul>
+<li>主go程中, 创建监听套接字;  记得<code>defer</code></li>
+<li><code>for</code> 循环监听客户端连接请求; <code>Accept()</code></li>
+<li>有一个客户端连接, 创建新 go 程 处理客户端数据 <code>HandlerConnet(conn)</code>;</li>
+<li>定义全局结构体类型: <code>C 、Name、Addr</code>;</li>
+<li>创建全局<code>map、channel</code>;</li>
+<li>实现<code>HandlerConnet</code>, 获取客户端<code>IP+port —— RemoteAddr()</code>; 初始化新用户结构体信息; </li>
+<li>创建 <code>Manager</code> 实现管理go程 — <code>Accept()</code> 之前;</li>
+<li>实现 <code>Manager</code>:  初始化 在线用户 <code>map</code>; 循环 读取全局 <code>channel</code>, 如果无数据, 阻塞; 如果有数据, 遍历在线用户 <code>map</code>, 将数据写到 用户的 <code>C</code> 里;</li>
+<li>将新用户添加到 在线用户 <code>map</code> 中, <code>Key == IP+port</code>  <code>value= 新用户结构体</code>;</li>
+<li>创建 <code>WriteMsgToClient</code> go程，专门给当前用户写数据。 —— 来源于 用户自带的 C 中; </li>
+<li>实现 <code>WriteMsgToClient(clnt，conn)</code>; 遍历自带的<code>C</code>, 读数据, <code>conn.Write</code> 到 客户端; </li>
+<li><code>HandlerConnet</code>中, 结束位置, 组织用户上线信息, 将 用户上线信息 写 到全局 <code>channel</code>  —— <code>Manager</code> 的读就被激活(原来一直阻塞)</li>
+<li><code>HandlerConnet</code>中, 结尾 加 <code>for &#123;  ；&#125;</code>;</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建用户结构体</span></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	C    <span class="keyword">chan</span> <span class="keyword">string</span></span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Addr <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建全局map, 存储在线用户</span></span><br><span class="line"><span class="keyword">var</span> onlineMap <span class="keyword">map</span>[<span class="keyword">string</span>]Client</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建全局channel, 传递用户消息</span></span><br><span class="line"><span class="keyword">var</span> message = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandlerConnect</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	<span class="comment">// 获取用户地址</span></span><br><span class="line">	netAddr := conn.RemoteAddr().String()</span><br><span class="line">	<span class="comment">// 创建新连接用户</span></span><br><span class="line">	clnt := Client&#123;</span><br><span class="line">		C:    <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>),</span><br><span class="line">		Name: netAddr,</span><br><span class="line">		Addr: netAddr,</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 将新连接用户, 添加到在线用户map中</span></span><br><span class="line">	onlineMap[netAddr] = clnt</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 创建专门用来给当前用户发送消息的协程</span></span><br><span class="line">	<span class="keyword">go</span> WriteMsgToClient(clnt, conn)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 发送用户上线消息到全局channel</span></span><br><span class="line">	message &lt;- <span class="string">&quot;[&quot;</span> + netAddr + <span class="string">&quot;]&quot;</span> + clnt.Name + <span class="string">&quot; login!!!&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteMsgToClient</span><span class="params">(clnt Client, conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 监听用户消息通道,发送给用户</span></span><br><span class="line">	<span class="keyword">for</span> msg := <span class="keyword">range</span> clnt.C &#123;</span><br><span class="line">		conn.Write([]<span class="keyword">byte</span>(msg + <span class="string">&quot;\r\n&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Mannager</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 初始化map</span></span><br><span class="line">	onlineMap = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]Client)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 循环读通道</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		msg := &lt;-message</span><br><span class="line">		<span class="comment">// 将数据发送给全部用户</span></span><br><span class="line">		<span class="keyword">for</span> _, clnt := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">			clnt.C &lt;- msg</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;聊天室启动...&quot;</span>)</span><br><span class="line">	<span class="comment">// 创建套接字</span></span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Listen err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 创建管理者协程, 用来管理map和channel</span></span><br><span class="line">	<span class="keyword">go</span> Mannager()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 循环监听客户端连接请求</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listener.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;Accept err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 启动协程处理客户端数据请求</span></span><br><span class="line">		<span class="keyword">go</span> HandlerConnect(conn)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-广播用户消息"><a href="#3-广播用户消息" class="headerlink" title="3. 广播用户消息"></a>3. 广播用户消息</h2><p>当某个客户端向服务端发送消息后, 服务端应将该消息广播给其它的客户端, 达到聊天室的群聊效果;<br>开启一个新的协程, 为方便传参, 可以选择匿名协程; 专门负责接收从客户端传递过来的数据, 然后将接收到的数据写到<code>messaage</code>通道中;<br>在实现“广播用户上线”时, 已经完成: <code>Manager</code>协程会阻塞读<code>message</code>通道, 一旦有数据, 则遍历map中的在线用户; 将数据写到结构体成员的<code>C</code>通道中; <code>WriteMsgToClient</code>协程会迭代<code>C</code>这个<code>channel</code>, 最终将数据发送给客户端; </p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	C    <span class="keyword">chan</span> <span class="keyword">string</span></span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Addr <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> onlineMap <span class="keyword">map</span>[<span class="keyword">string</span>]Client</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> message = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeMsg</span><span class="params">(clnt Client, msg <span class="keyword">string</span>)</span> <span class="params">(buf <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	buf = <span class="string">&quot;[&quot;</span> + netAddr + <span class="string">&quot;]&quot;</span> + clnt.Name + <span class="string">&quot;: &quot;</span> + msg</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandlerConnect</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	netAddr := conn.RemoteAddr().String()</span><br><span class="line">	clnt := Client&#123;</span><br><span class="line">		C:    <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>),</span><br><span class="line">		Name: netAddr,</span><br><span class="line">		Addr: netAddr,</span><br><span class="line">	&#125;</span><br><span class="line">	onlineMap[netAddr] = clnt</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> WriteMsgToClient(clnt, conn)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 专门处理用户发送的消息</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			n, err := conn.Read(buf)</span><br><span class="line">			<span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">				fmt.Printf(<span class="string">&quot;检测到客户端:%s退出!!!\n&quot;</span>, clnt.Name)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;conn.Read error: &quot;</span>, err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 将读到的消息广播给用户</span></span><br><span class="line">			message &lt;- MakeMsg(clnt, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 发送用户上线消息到全局channel</span></span><br><span class="line">	message &lt;- MakeMsg(clnt, <span class="string">&quot;login!!!&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteMsgToClient</span><span class="params">(clnt Client, conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> msg := <span class="keyword">range</span> clnt.C &#123;</span><br><span class="line">		conn.Write([]<span class="keyword">byte</span>(msg + <span class="string">&quot;\r\n&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Mannager</span><span class="params">()</span></span> &#123;</span><br><span class="line">	onlineMap = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]Client)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		msg := &lt;-message</span><br><span class="line">		<span class="keyword">for</span> _, clnt := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">			clnt.C &lt;- msg</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;聊天室启动...&quot;</span>)</span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Listen err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> Mannager()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listener.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;Accept err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">go</span> HandlerConnect(conn)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-展示在线用户"><a href="#4-展示在线用户" class="headerlink" title="4. 展示在线用户:"></a>4. 展示在线用户:</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	C    <span class="keyword">chan</span> <span class="keyword">string</span></span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Addr <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> onlineMap <span class="keyword">map</span>[<span class="keyword">string</span>]Client</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> message = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeMsg</span><span class="params">(clnt Client, msg <span class="keyword">string</span>)</span> <span class="params">(buf <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	buf = <span class="string">&quot;[&quot;</span> + netAddr + <span class="string">&quot;]&quot;</span> + clnt.Name + <span class="string">&quot;: &quot;</span> + msg</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandlerConnect</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	netAddr := conn.RemoteAddr().String()</span><br><span class="line">	clnt := Client&#123;</span><br><span class="line">		C:    <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>),</span><br><span class="line">		Name: netAddr,</span><br><span class="line">		Addr: netAddr,</span><br><span class="line">	&#125;</span><br><span class="line">	onlineMap[netAddr] = clnt</span><br><span class="line">	<span class="keyword">go</span> WriteMsgToClient(clnt, conn)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 专门处理用户发送的消息</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			n, err := conn.Read(buf)</span><br><span class="line">			<span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">				fmt.Printf(<span class="string">&quot;检测到客户端:%s退出!!!\n&quot;</span>, clnt.Name)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;conn.Read error: &quot;</span>, err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			msg := <span class="keyword">string</span>(buf[:n])</span><br><span class="line">			<span class="comment">// 提取在线列表</span></span><br><span class="line">			<span class="keyword">if</span> msg == <span class="string">&quot;who&quot;</span> &amp;&amp; <span class="built_in">len</span>(msg) == <span class="number">3</span> &#123;</span><br><span class="line">				conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;online user list: \n&quot;</span>))</span><br><span class="line">				<span class="keyword">for</span> _, user := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">					userInfo := user.Addr + <span class="string">&quot;:&quot;</span> + user.Name + <span class="string">&quot;\n&quot;</span></span><br><span class="line">					conn.Write([]<span class="keyword">byte</span>(userInfo))</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="comment">// 将读到的消息广播给用户</span></span><br><span class="line">				message &lt;- MakeMsg(clnt, msg)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	message &lt;- MakeMsg(clnt, <span class="string">&quot;login!!!&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteMsgToClient</span><span class="params">(clnt Client, conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> msg := <span class="keyword">range</span> clnt.C &#123;</span><br><span class="line">		conn.Write([]<span class="keyword">byte</span>(msg + <span class="string">&quot;\r\n&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Mannager</span><span class="params">()</span></span> &#123;</span><br><span class="line">	onlineMap = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]Client)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		msg := &lt;-message</span><br><span class="line">		<span class="keyword">for</span> _, clnt := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">			clnt.C &lt;- msg</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;聊天室启动...&quot;</span>)</span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Listen err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line">	<span class="keyword">go</span> Mannager()</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listener.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;Accept err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">go</span> HandlerConnect(conn)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-修改用户名"><a href="#5-修改用户名" class="headerlink" title="5. 修改用户名:"></a>5. 修改用户名:</h2><p>当用户成功登录上来可以通过给服务器发送消息, 来修改自己的用户名;<br>设定, 如果用户发送<code>rename | Iron man</code>指令，既是想修改自己的用户名为“Iron man”; 判断用户消息, 是否包含<code>rename|</code>关键字: <code>if len(msg) &gt;= 8 &amp;&amp; msg[:6] == &quot;rename&quot; &#123;&#125;</code>; 如果是, 那么拆分用户意欲修改的用户名保存;<br><code>strings.Split()</code>函数可以完成拆分字符串操作;</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">	<span class="string">&quot;strings&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	C    <span class="keyword">chan</span> <span class="keyword">string</span></span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Addr <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> onlineMap <span class="keyword">map</span>[<span class="keyword">string</span>]Client</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> message = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeMsg</span><span class="params">(clnt Client, msg <span class="keyword">string</span>)</span> <span class="params">(buf <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	buf = <span class="string">&quot;[&quot;</span> + netAddr + <span class="string">&quot;]&quot;</span> + clnt.Name + <span class="string">&quot;: &quot;</span> + msg</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandlerConnect</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	netAddr := conn.RemoteAddr().String()</span><br><span class="line">	clnt := Client&#123;</span><br><span class="line">		C:    <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>),</span><br><span class="line">		Name: netAddr,</span><br><span class="line">		Addr: netAddr,</span><br><span class="line">	&#125;</span><br><span class="line">	onlineMap[netAddr] = clnt</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> WriteMsgToClient(clnt, conn)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			n, err := conn.Read(buf)</span><br><span class="line">			<span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">				fmt.Printf(<span class="string">&quot;检测到客户端:%s退出!!!\n&quot;</span>, clnt.Name)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;conn.Read error: &quot;</span>, err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			msg := <span class="keyword">string</span>(buf[:n])</span><br><span class="line">			<span class="comment">// 提取在线列表</span></span><br><span class="line">			<span class="keyword">if</span> msg == <span class="string">&quot;who&quot;</span> &amp;&amp; <span class="built_in">len</span>(msg) == <span class="number">3</span> &#123;</span><br><span class="line">				conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;online user list: \n&quot;</span>))</span><br><span class="line">				<span class="keyword">for</span> _, user := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">					userInfo := user.Addr + <span class="string">&quot;:&quot;</span> + user.Name + <span class="string">&quot;\n&quot;</span></span><br><span class="line">					conn.Write([]<span class="keyword">byte</span>(userInfo))</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">len</span>(msg) &gt; <span class="number">8</span> &amp;&amp; strings.HasPrefix(msg, <span class="string">&quot;reame|&quot;</span>) &#123;</span><br><span class="line">				newName := strings.Split(msg, <span class="string">&quot;|&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">				clnt.Name = newName</span><br><span class="line">				<span class="comment">// 更新到全局map中</span></span><br><span class="line">				onlineMap[clnt.Addr] = clnt</span><br><span class="line">				<span class="comment">// 发送消息</span></span><br><span class="line">				conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;rename successful!!&quot;</span>))</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				message &lt;- MakeMsg(clnt, msg)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	message &lt;- MakeMsg(clnt, <span class="string">&quot;login!!!&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteMsgToClient</span><span class="params">(clnt Client, conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> msg := <span class="keyword">range</span> clnt.C &#123;</span><br><span class="line">		conn.Write([]<span class="keyword">byte</span>(msg + <span class="string">&quot;\r\n&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Mannager</span><span class="params">()</span></span> &#123;</span><br><span class="line">	onlineMap = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]Client)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		msg := &lt;-message</span><br><span class="line">		<span class="keyword">for</span> _, clnt := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">			clnt.C &lt;- msg</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;聊天室启动...&quot;</span>)</span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Listen err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> Mannager()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listener.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;Accept err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">go</span> HandlerConnect(conn)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-用户退出与超时处理"><a href="#5-用户退出与超时处理" class="headerlink" title="5. 用户退出与超时处理:"></a>5. 用户退出与超时处理:</h2><p><strong>超时处理:</strong><br>如果客户端没有主动退出, 并且长时间没有发送消息, 会一直占用服务端的资源; 服务器通常针对这种用户添加“超时强踢”机制, 强制将该客户端与服务器连接断开;<br>可以借助并发编程的<code>select</code>超时机制来实现; <code>Select</code>监听<code>time.After(60 * time.Second)</code> 通道上的数据流动; 如果在计时期间一直没有数据, 通道中会被写入当前系统时间, <code>select</code> 的<code>case</code>满足读条件, 不再阻塞; 但, 有一个问题, 用户如果持续在输入数据, 这个计时器依然在计时, 时间到, 依然会强制踢出用户;<br>因此, 另外创建一个通道<code>hasData</code>来检测用户是否有数据发送, 让<code>Select</code>也来监听这个<code>channel</code>; 这样, 当用户有数据输入时, <code>select</code>监听的这个<code>hasData</code>通道会满足<code>case</code>条件得以执行, 但不做任何处理; 目的是使得监听在<code>select</code>中的计时器被重新计时;</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">	<span class="string">&quot;strings&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	C    <span class="keyword">chan</span> <span class="keyword">string</span></span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Addr <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> onlineMap <span class="keyword">map</span>[<span class="keyword">string</span>]Client</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> message = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeMsg</span><span class="params">(clnt Client, msg <span class="keyword">string</span>)</span> <span class="params">(buf <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	buf = <span class="string">&quot;[&quot;</span> + clnt.Addr + <span class="string">&quot;]&quot;</span> + clnt.Name + <span class="string">&quot;: &quot;</span> + msg</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandlerConnect</span><span class="params">(conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	netAddr := conn.RemoteAddr().String()</span><br><span class="line">	clnt := Client&#123;</span><br><span class="line">		C:    <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>),</span><br><span class="line">		Name: netAddr,</span><br><span class="line">		Addr: netAddr,</span><br><span class="line">	&#125;</span><br><span class="line">	onlineMap[netAddr] = clnt</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> WriteMsgToClient(clnt, conn)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 创建一个 channel, 用来判断用退出状态</span></span><br><span class="line">	isQuit := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>)</span><br><span class="line">	<span class="comment">// 创建channel 判断, 用户是否活跃</span></span><br><span class="line">	hasData := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			n, err := conn.Read(buf)</span><br><span class="line">			<span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">				isQuit &lt;- <span class="literal">true</span></span><br><span class="line">				fmt.Printf(<span class="string">&quot;检测到客户端:%s退出!!!\n&quot;</span>, clnt.Name)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">&quot;conn.Read error: &quot;</span>, err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			msg := <span class="keyword">string</span>(buf[:n])</span><br><span class="line">			<span class="keyword">if</span> strings.HasPrefix(msg, <span class="string">&quot;who&quot;</span>) &#123;</span><br><span class="line">				conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;online user list: \n&quot;</span>))</span><br><span class="line">				<span class="keyword">for</span> _, user := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">					userInfo := user.Addr + <span class="string">&quot;:&quot;</span> + user.Name + <span class="string">&quot;\n&quot;</span></span><br><span class="line">					conn.Write([]<span class="keyword">byte</span>(userInfo))</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> strings.HasPrefix(msg, <span class="string">&quot;rename|&quot;</span>) &#123;</span><br><span class="line">				newName := strings.Split(msg, <span class="string">&quot;|&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">				clnt.Name = newName</span><br><span class="line">				onlineMap[clnt.Addr] = clnt</span><br><span class="line">				conn.Write([]<span class="keyword">byte</span>(<span class="string">&quot;rename successful!!&quot;</span>))</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				message &lt;- MakeMsg(clnt, msg)</span><br><span class="line">			&#125;</span><br><span class="line">			hasData &lt;- <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">	<span class="comment">// 发送用户上线消息到全局channel</span></span><br><span class="line">	message &lt;- MakeMsg(clnt, <span class="string">&quot;login!!!&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-isQuit:</span><br><span class="line">			<span class="built_in">delete</span>(onlineMap, clnt.Addr)</span><br><span class="line">			message &lt;- MakeMsg(clnt, <span class="string">&quot;logout&quot;</span>) <span class="comment">// 写入用户退出消息到全局channel</span></span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		<span class="keyword">case</span> &lt;-hasData:</span><br><span class="line">			<span class="comment">// 什么都不做。 目的是重置 下面 case 的计时器。</span></span><br><span class="line">		<span class="keyword">case</span> &lt;-time.After(time.Second * <span class="number">60</span>):</span><br><span class="line">			<span class="built_in">delete</span>(onlineMap, clnt.Addr)                <span class="comment">// 将用户从 online移除</span></span><br><span class="line">			message &lt;- MakeMsg(clnt, <span class="string">&quot;time out leaved&quot;</span>) <span class="comment">// 写入用户退出消息到全局channel</span></span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">WriteMsgToClient</span><span class="params">(clnt Client, conn net.Conn)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> msg := <span class="keyword">range</span> clnt.C &#123;</span><br><span class="line">		conn.Write([]<span class="keyword">byte</span>(msg + <span class="string">&quot;\r\n&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Mannager</span><span class="params">()</span></span> &#123;</span><br><span class="line">	onlineMap = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]Client)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		msg := &lt;-message</span><br><span class="line">		<span class="keyword">for</span> _, clnt := <span class="keyword">range</span> onlineMap &#123;</span><br><span class="line">			clnt.C &lt;- msg</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;聊天室启动...&quot;</span>)</span><br><span class="line">	listener, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;0.0.0.0:8000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Listen err: &quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> listener.Close()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> Mannager()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		conn, err := listener.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;Accept err: &quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">go</span> HandlerConnect(conn)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2021/04/21/golang004/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Golang%E9%AB%98%E7%BA%A7-Go%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">Golang高级 - Go网络编程</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2021/04/02/sshConfig/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">服务器--ssh 配置与使用</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "qN5SC467uXSyyDUAN8KGgUrk-gzGzoHsz",
+    app_key: "B9QicLkzMLUsYV8cDEgjCxIq",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2021
+        <i class="ri-heart-fill heart_icon"></i> zhouChengfei
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279581307&amp;web_id=1279581307'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.png" alt="成飞的Blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/photos">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/aliPay.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechatPay.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="86"
+        src="//music.163.com/outchain/player?type=2&id=472137749&auto=1&height=66"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":450,"hOffset":50,"vOffset":-20},"mobile":{"show":false},"react":{"opacity":0.7},"dialog":{"enable":true,"hitokoto":true},"log":false});</script></body>
+
+</html>
