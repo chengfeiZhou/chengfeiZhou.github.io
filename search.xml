@@ -2126,4 +2126,173 @@ ps:公私钥原理(对称加密)自行百度</li>
         <tag>内置函数</tag>
       </tags>
   </entry>
+  <entry>
+    <title>五、Golang之HTTP编程</title>
+    <url>/2021/05/02/golang005/</url>
+    <content><![CDATA[<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><h2 id="1-Web工作方式"><a href="#1-Web工作方式" class="headerlink" title="1. Web工作方式:"></a>1. Web工作方式:</h2><p>对于普通的上网过程, 系统其实是这样做的:<br>浏览器本身是一个客户端, 当输入URL的时候, 首先浏览器会去请求DNS服务器, 通过DNS获取相应的域名对应的IP, 然后通过IP地址找到IP对应的服务器后, 要求建立TCP连接, 等浏览器发送完<code>HTTP Request(请求)</code>包后, 服务器接收到请求包之后才开始处理请求包, 服务器调用自身服务, 返回<code>HTTP Response(响应)</code>包; 客户端收到来自服务器的响应后开始渲染这个<code>Response</code>包里的主体<code>(body)</code>, 等收到全部的内容随后断开与该服务器之间的TCP连接;</p>
+<p><img src="/images/golang/027_DnsSer.png"></p>
+<p>DNS域名服务器(Domain Name Server)是进行域名(domain name)和与之相对应的IP地址转换的服务器; DNS中保存了一张域名解析表;解析消息的域名;<br>一个<strong>Web服务器也被称为HTTP服务器</strong>, 它通过HTTP(HyperText Transfer Protocol 超文本传输协议)协议与客户端通信; 这个客户端通常指的是Web浏览器(其实手机端客户端内部也是浏览器实现的);<br>Web服务器的工作原理可以简单地归纳为: </p>
+<ul>
+<li>客户机通过<code>TCP/IP</code>协议建立到服务器的TCP连接;</li>
+<li>客户端向服务器发送HTTP协议请求包, 请求服务器里的资源文档;</li>
+<li>服务器向客户机发送HTTP协议应答包, 如果请求的资源包含有动态语言的内容, 那么服务器会调用动态语言的解释引擎负责处理“动态内容”, 并将处理得到的数据返回给客户端;</li>
+<li>客户机与服务器断开; 由客户端解释HTML文档, 在客户端屏幕上渲染图形结果;</li>
+</ul>
+<h2 id="2-HTTP协议"><a href="#2-HTTP协议" class="headerlink" title="2. HTTP协议"></a>2. HTTP协议</h2><p>超文本传输协议(HTTP, HyperText Transfer Protocol)是互联网上应用最为广泛的一种网络协议, 它详细规定了浏览器和万维网服务器之间互相通信的规则, 通过因特网传送万维网文档的数据传送协议;<br>HTTP协议通常承载于TCP协议之上, 有时也承载于TLS或SSL协议层之上, 这个时候, 就成了HTTPS; 如下图所示:</p>
+<p><img src="/images/golang/028_https.png"></p>
+<h2 id="3-地址（URL）"><a href="#3-地址（URL）" class="headerlink" title="3. 地址（URL）"></a>3. 地址（URL）</h2><p>URL全称为<code>Unique Resource Location</code>, 用来表示网络资源, 可以理解为网络文件路径;<br>基本URL的结构包含模式(协议)、服务器名称(IP地址)、路径和文件名; 常见的协议/模式如<code>http、https、ftp</code>等; 服务器的名称或IP地址后面有时还跟一个冒号和一个端口号; 再后面是到达这个文件的路径和文件本身的名称; 如: </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost[&quot;:&quot;port][abs_path]</span><br><span class="line">http:&#x2F;&#x2F;192.168.31.1&#x2F;html&#x2F;index</span><br><span class="line">https:&#x2F;&#x2F;pan.baidu.com&#x2F;</span><br></pre></td></tr></table></figure>
+<p>URL的长度有限制, 不同的服务器的限制值不太相同, 但是不能无限长;</p>
+<h1 id="二、HTTP报文解析"><a href="#二、HTTP报文解析" class="headerlink" title="二、HTTP报文解析:"></a>二、HTTP报文解析:</h1><h2 id="1-请求报文格式"><a href="#1-请求报文格式" class="headerlink" title="1. 请求报文格式:"></a>1. 请求报文格式:</h2><p><img src="/images/golang/029_httpbaowen.png"><br>HTTP 请求报文由<code>请求行、请求头部、空行、请求包体</code>4个部分组成, 如下图所示:<br><img src="/images/golang/030_httpbao.png"></p>
+<ul>
+<li>请求行:<ul>
+<li>请求行由<strong>方法字段、URL 字段 和HTTP 协议版本字段</strong> 3个部分组成, 他们之间使用空格隔开;</li>
+</ul>
+</li>
+<li>请求头部<ul>
+<li>请求头部为请求报文添加了一些附加信息, 由<strong>名/值</strong>对组成, 每行一对, 名和值之间使用冒号分隔; 请求头部通知服务器有关于客户端请求的信息, 典型的请求头有:<table>
+<thead>
+<tr>
+<th>请求头</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>User-Agent</td>
+<td>请求的浏览器类型</td>
+</tr>
+<tr>
+<td>Accept</td>
+<td>客户端可识别的响应内容类型列表, 星号“ * ”用于按范围将类型分组, 用“ <em>/</em> ”指示可接受全部类型, 用“ type/* ”指示可接受 <code>type</code> 类型的所有子类型</td>
+</tr>
+<tr>
+<td>Accept-Language</td>
+<td>客户端可接受的自然语言</td>
+</tr>
+<tr>
+<td>Accept-Encoding</td>
+<td>客户端可接受的编码压缩格式</td>
+</tr>
+<tr>
+<td>Accept-Charset</td>
+<td>可接受的应答的字符集</td>
+</tr>
+<tr>
+<td>Host</td>
+<td>请求的主机名, 允许多个域名同处一个IP 地址, 即虚拟主机</td>
+</tr>
+<tr>
+<td>connection</td>
+<td>连接方式(close或keepalive)</td>
+</tr>
+<tr>
+<td>Cookie</td>
+<td>存储于客户端扩展字段，向同一域名的服务端发送属于该域的cookie</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+<li>空行<ul>
+<li>最后一个请求头之后是一个空行, 发送回车符和换行符, 通知服务器以下不再有请求头;</li>
+</ul>
+</li>
+<li>请求包体<ul>
+<li>请求包体不在<code>GET</code>方法中使用, 而在<code>POST</code>方法中使用; <code>POST</code>方法适用于需要客户填写表单的场合了; 与请求包体相关的最常使用的是包体类型<code>Content-Type</code>和包体长度<code>Content-Length</code>;</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-响应报文格式"><a href="#2-响应报文格式" class="headerlink" title="2.响应报文格式:"></a>2.响应报文格式:</h2><p>http的成功响应报文:<br><img src="/images/golang/031_responseOk.png"></p>
+<p>http的失败响应报文:<br><img src="/images/golang/032_responseError.png"></p>
+<p>HTTP 响应报文由<code>状态行、响应头部、空行、响应包体</code>4个部分组成, 如下图所示:<br><img src="/images/golang/033_response.png"></p>
+<ul>
+<li>状态行:<ul>
+<li>状态行由 <code>HTTP 协议版本字段、状态码和状态码的描述文本</code>3个部分组成, 他们之间使用空格隔开; </li>
+<li>状态码: 状态码由三位数字组成, 第一位数字表示响应的类型, 常用的状态码有五大类如下所示:<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1xx</td>
+<td>表示服务器已接收了客户端请求，客户端可继续发送请求</td>
+</tr>
+<tr>
+<td>2xx</td>
+<td>表示服务器已成功接收到请求并进行处理</td>
+</tr>
+<tr>
+<td>3xx</td>
+<td>表示服务器要求客户端重定向</td>
+</tr>
+<tr>
+<td>4xx</td>
+<td>表示客户端的请求有非法内容</td>
+</tr>
+<tr>
+<td>5xx</td>
+<td>表示服务器未能正常处理客户端的请求而出现意外错误</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+</ul>
+<p>常见的状态码举例:<br>|状态码|    含义|<br>|-|-|<br>|200 OK    |客户端请求成功|<br>|400 Bad Request|    请求报文有语法错误|<br>|401 Unauthorized|    未授权|<br>|403 Forbidden|    服务器拒绝服务|<br>|404 Not Found|    请求的资源不存在|<br>|500 Internal Server Error|    服务器内部错误|<br>|503 Server Unavailable|    服务器临时不能处理客户端请求|</p>
+<ul>
+<li>响应头部<ul>
+<li>响应头可能包括:</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>响应头</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Location</td>
+<td>Location响应报头域用于重定向接受者到一个新的位置</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>Server 响应报头域包含了服务器用来处理请求的软件信息及其版本</td>
+</tr>
+<tr>
+<td>Vary</td>
+<td>指示不可缓存的请求头列表</td>
+</tr>
+<tr>
+<td>Connection</td>
+<td>连接方式</td>
+</tr>
+</tbody></table>
+<ul>
+<li>空行:<ul>
+<li>最后一个响应头部之后是一个空行, 发送回车符和换行符, 通知服务器以下不再有响应头部;</li>
+</ul>
+</li>
+<li>响应包体:<ul>
+<li>服务器返回给客户端的文本信息;</li>
+</ul>
+</li>
+</ul>
+<h1 id="三、Go语言HTTP编程"><a href="#三、Go语言HTTP编程" class="headerlink" title="三、Go语言HTTP编程:"></a>三、Go语言HTTP编程:</h1><p>Go语言标准库内建提供了<code>net/http</code>包, 涵盖了HTTP客户端和服务端的具体实现; 使用<code>net/http</code>包, 可以很方便地编写HTTP客户端或服务端的程序:</p>
+<p>简单的服务端:</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;net/http&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 浏览器访问时，该函数被回调</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">   w.Write([]<span class="keyword">byte</span>(<span class="string">&quot;hello http&quot;</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">   <span class="comment">// 注册处理函数</span></span><br><span class="line">   http.HandleFunc(<span class="string">&quot;/hello&quot;</span>, handler)</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 绑定服务器监听地址</span></span><br><span class="line">   http.ListenAndServe(<span class="string">&quot;127.0.0.1:8000&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单的客户端:</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">&quot;net&quot;</span></span><br><span class="line">   <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">   <span class="comment">// 客户端主动连接服务器</span></span><br><span class="line">   conn, err := net.Dial(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;127.0.0.1:8000&quot;</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;Dial err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">defer</span> conn.Close()</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 模拟浏览器，组织一个最简单的请求报文。包含请求行，请求头，空行即可。</span></span><br><span class="line">   requestHttpHeader := <span class="string">&quot;GET /hello HTTP/1.1\r\nHost:127.0.0.1:8000\r\n\r\n&quot;</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 给服务器发送请求报文</span></span><br><span class="line">   conn.Write([]<span class="keyword">byte</span>(requestHttpHeader))</span><br><span class="line"></span><br><span class="line">   buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4096</span>)</span><br><span class="line">   <span class="comment">// 读取服务器回复 响应报文</span></span><br><span class="line">   n, err := conn.Read(buf)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">&quot;Read err:&quot;</span>, err)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 打印观察</span></span><br><span class="line">   fmt.Printf(<span class="string">&quot;#\n%s#&quot;</span>, <span class="keyword">string</span>(buf[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Golang高级</category>
+        <category>Go网络编程</category>
+      </categories>
+      <tags>
+        <tag>Golang高级 - Go网络编程</tag>
+      </tags>
+  </entry>
 </search>
